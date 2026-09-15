@@ -162,3 +162,24 @@ document.getElementById('googleLoginBtn').addEventListener('click', async () => 
     alert("שגיאה בהתחברות עם גוגל. ודא שהשירות הופעל בפיירבייס.");
   }
 });
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    // מעבר חלק שמתאים במיוחד לדפדפנים בנייד
+    await firebase.auth().signInWithRedirect(provider);
+  } catch (error) {
+    alert("שגיאה בהתחברות: " + error.message);
+  }
+});
+
+// בדיקת תוצאת החזרה מההתחברות של גוגל
+firebase.auth().getRedirectResult().then((result) => {
+  if (result.user) {
+    const userName = result.user.displayName;
+    localStorage.setItem('loggedUser', userName);
+    location.reload();
+  }
+}).catch((error) => {
+  console.log(error);
+});
