@@ -149,3 +149,16 @@ if(currentUser)startApp();
 <button type="button" id="googleLoginBtn" class="submit-btn" style="background: #4285F4; margin-top: 10px;">
   🌐 התחבר עם חשבון Google
 </button>
+document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    const result = await firebase.auth().signInWithPopup(provider);
+    const userName = result.user.displayName; // שם המשתמש מחשבון הגוגל
+    
+    // שמירה במערכת ומעבר פנימה
+    localStorage.setItem('loggedUser', userName);
+    location.reload();
+  } catch (error) {
+    alert("שגיאה בהתחברות עם גוגל. ודא שהשירות הופעל בפיירבייס.");
+  }
+});
