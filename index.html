@@ -412,7 +412,6 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- עמוד סקרים -->
 <section id="page-polls" class="page">
   <div class="grid two">
     <div class="card">
@@ -434,6 +433,7 @@ button{cursor:pointer}
   </div>
 </section>
 
+<!-- פאנל ניהול הכולל כעת גם ניהול משתמשים מורשים -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
@@ -445,12 +445,21 @@ button{cursor:pointer}
       <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px" type="button">שמור תורן מעודכן בענן</button>
     </div>
     <div class="card">
-      <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת רשמית</h2></div>
-      <div style="margin-bottom:16px">
-        <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
+      <div class="card-head"><h2 class="card-title">👥 ניהול משתמשים מורשים (Whitelist)</h2></div>
+      <p class="muted" style="font-size:12px;margin-bottom:12px">הוסף כתובת מייל או שם משתמש שרשאי להיכנס לאתר:</p>
+      <div style="margin-bottom:12px;display:flex;gap:8px">
+        <input id="newAllowedUserInput" class="search" placeholder="הכנס מייל או שם להרשאה...">
+        <button class="google-login-btn" id="addAllowedUserBtn" style="background:var(--green);color:#fff;width:120px;height:48px;font-size:14px" type="button">הוסף</button>
       </div>
-      <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px" type="button">שדור הודעת מערכת לכולם</button>
+      <div id="allowedUsersList" class="notice" style="max-height:140px;overflow:auto">טוען רשימת מורשים...</div>
     </div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת רשמית</h2></div>
+    <div style="margin-bottom:16px">
+      <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
+    </div>
+    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px" type="button">שדור הודעת מערכת לכולם</button>
   </div>
 </section>
 
@@ -537,8 +546,17 @@ const PEOPLE = {
   asherPisrbavsky:  'אשר פיסרבסקי'
 };
 
-// רשימת שמות מורשים בלבד לכניסה למערכת (Whitelist)
-const ALLOWED_USERS = Object.values(PEOPLE);
+// רשימת בסיס התחלתית + ניהול מהענן
+let dynamicAllowedUsers = [
+  ...Object.values(PEOPLE),
+  "אברהם גוטשטיין", "Avraham Gutstein", "avraham",
+  "אהרן שמש", "Aharon Shemesh",
+  "אהרן פוטש", "Aharon Potesh",
+  "יעקב פוטש", "Yaakov Potesh",
+  "אפרים גוטליב", "Ephraim Gotlib",
+  "יהודה קויפמן", "Yehuda Kaufman",
+  "אשר פיסרבסקי", "Asher Pisrbavsky"
+];
 
 const RANDOM_MESSAGES = [
   "\"החכמה היא לא לדעת מה להגיד, אלא מתי להגיד.\" 💡",
@@ -598,11 +616,23 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// בדיקת הרשאת משתמש (תואם לשמות המורשים או חלקם)
-function checkUserAuthorization(userName) {
-  if (!userName) return false;
-  // בדיקה האם השם תואם לאחד מחברי הקבוצה המורשים
-  return ALLOWED_USERS.some(u => userName.includes(u) || u.includes(userName) || userName === "אברהם גוטשטיין");
+// טעינת רשימת מורשים מענן פיירבייס
+db.collection("groupData").doc("accessControl").onSnapshot((doc) => {
+  if (doc.exists && doc.data().allowedList) {
+    dynamicAllowedUsers = doc.data().allowedList;
+  }
+  renderAllowedUsersAdmin();
+});
+
+function checkUserAuthorization(userName, userEmail) {
+  if (!userName && !userEmail) return false;
+  if (userEmail && userEmail.includes("0583211042") || userName.includes("אברהם") || userName.includes("Avraham")) {
+    return true;
+  }
+  return dynamicAllowedUsers.some(u => 
+    (userName && userName.toLowerCase().includes(u.toLowerCase())) || 
+    (userEmail && userEmail.toLowerCase().includes(u.toLowerCase()))
+  );
 }
 
 const googleLoginBtn = document.getElementById('googleLoginBtn');
@@ -620,13 +650,14 @@ if (googleLoginBtn) {
 auth.getRedirectResult().then((result) => {
   if (result.user) {
     const googleName = result.user.displayName || result.user.email;
-    if (checkUserAuthorization(googleName)) {
-      currentUser = googleName;
+    const googleEmail = result.user.email;
+    if (checkUserAuthorization(googleName, googleEmail)) {
+      currentUser = result.user.displayName || googleEmail;
       localStorage.setItem('loggedUser', currentUser);
       startApp();
     } else {
       auth.signOut();
-      alert("הגישה נדחתה: חשבון זה אינו מורשה להיכנס למערכת הקבוצתית.");
+      alert("הגישה נדחתה: חשבון זה אינו מורשה. פנה למנהל להוספה.");
     }
   }
 }).catch((error) => {
@@ -634,13 +665,14 @@ auth.getRedirectResult().then((result) => {
 });
 
 auth.onAuthStateChanged((user) => {
-  if (user && user.displayName) {
-    if (checkUserAuthorization(user.displayName)) {
-      currentUser = user.displayName;
+  if (user && (user.displayName || user.email)) {
+    const nameOrEmail = user.displayName || user.email;
+    if (checkUserAuthorization(nameOrEmail, user.email)) {
+      currentUser = nameOrEmail;
       localStorage.setItem('loggedUser', currentUser);
       startApp();
     }
-  } else if (currentUser && checkUserAuthorization(currentUser)) {
+  } else if (currentUser && checkUserAuthorization(currentUser, "")) {
     startApp();
   }
 });
@@ -651,7 +683,7 @@ function startApp() {
   if (loginScreen) loginScreen.style.display = 'none';
   if (mainApp) mainApp.style.display = 'block';
 
-  if (currentUser && (currentUser.includes("אברהם") || currentUser.includes("גוטשטיין"))) {
+  if (currentUser && (currentUser.includes("אברהם") || currentUser.includes("Avraham") || currentUser.includes("0583211042"))) {
     const adminNavBtn = document.getElementById('adminNavBtn');
     const adminBottomBtn = document.getElementById('adminBottomBtn');
     if (adminNavBtn) adminNavBtn.classList.remove('hidden');
@@ -673,7 +705,6 @@ function startApp() {
       const data = doc.data();
       currentDuty = data.currentDuty || "";
       
-      // איפוס יומי אוטומטי של סטטוסים לפי תאריך מערכת
       const todayStr = new Date().toDateString();
       if (data.lastResetDate !== todayStr) {
         memberStatuses = {};
@@ -1125,6 +1156,45 @@ if (saveAdminDutyBtn) {
     showToast("התורן נשמר בהצלחה בענן!");
   });
 }
+
+// ניהול רשימת מורשים בפאנל הניהול
+function renderAllowedUsersAdmin() {
+  const container = document.getElementById('allowedUsersList');
+  if (!container) return;
+  container.innerHTML = dynamicAllowedUsers.map((u, index) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
+      <span>${u}</span>
+      <button style="border:0;background:rgba(239,68,68,0.2);color:#f87171;border-radius:6px;padding:2px 8px;font-size:11px" onclick="removeAllowedUser(${index})">הסר</button>
+    </div>
+  `).join('');
+}
+
+const addAllowedUserBtn = document.getElementById('addAllowedUserBtn');
+if (addAllowedUserBtn) {
+  addAllowedUserBtn.addEventListener('click', async () => {
+    const input = document.getElementById('newAllowedUserInput');
+    const val = input ? input.value.trim() : '';
+    if (!val) { showToast("נא להזין מייל או שם"); return; }
+    if (!dynamicAllowedUsers.includes(val)) {
+      dynamicAllowedUsers.push(val);
+      await db.collection("groupData").doc("accessControl").set({ allowedList: dynamicAllowedUsers });
+      input.value = "";
+      showToast("המשתמש נוסף בהצלחה למורשים!");
+    } else {
+      showToast("המשתמש כבר קיים ברשימה");
+    }
+  });
+}
+
+window.removeAllowedUser = async function(index) {
+  if (dynamicAllowedUsers.length <= 1) {
+    showToast("אי אפשר למוק את כולם");
+    return;
+  }
+  dynamicAllowedUsers.splice(index, 1);
+  await db.collection("groupData").doc("accessControl").set({ allowedList: dynamicAllowedUsers });
+  showToast("המשתמש הוסר בהצלחה!");
+};
 
 const sendAdminBroadcastBtn = document.getElementById('sendAdminBroadcastBtn');
 if (sendAdminBroadcastBtn) {
