@@ -102,7 +102,6 @@ h2{margin:0;font-size:25px;letter-spacing:-.5px}.lead{color:var(--muted);margin:
 import {initializeApp} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import {getAuth,GoogleAuthProvider,signInWithPopup,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
 import {getFirestore,collection,addDoc,onSnapshot,query,orderBy,serverTimestamp,deleteDoc,doc} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
 const firebaseConfig={apiKey:"AIzaSyB_AerhoBm-VJPqf25kOH1S4xGdauV2EDI",authDomain:"group-hub-2026.firebaseapp.com",projectId:"group-hub-2026",storageBucket:"group-hub-2026.firebasestorage.app",messagingSenderId:"816870308307",appId:"1:816870308307:web:c3252cbb51f4f075d49726",measurementId:"G-KMJ1H172PN"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),provider=new GoogleAuthProvider();
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
