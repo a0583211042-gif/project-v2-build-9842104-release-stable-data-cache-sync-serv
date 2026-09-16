@@ -3,37 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#030712">
-<title>סינכרון | מרכז קבוצה עילית</title>
+<meta name="theme-color" content="#020617">
+<title>סינכרון | פלאגשיפ מרכז קבוצה</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
 :root{
-  --bg: #030712;
-  --panel: rgba(15, 23, 42, 0.75);
-  --panel-glass: rgba(30, 41, 59, 0.55);
-  --line: rgba(56, 189, 248, 0.22);
-  --line-glow: rgba(56, 189, 248, 0.45);
+  --bg: #020617;
+  --surface: rgba(15, 23, 42, 0.7);
+  --surface-hover: rgba(30, 41, 59, 0.85);
+  --border: rgba(148, 163, 184, 0.12);
+  --border-glow: rgba(56, 189, 248, 0.4);
   --text: #f8fafc;
   --muted: #94a3b8;
-  --brand: #6366f1;
-  --brand-glow: rgba(99, 102, 241, 0.5);
-  --cyan: #0ea5e9;
-  --green: #10b981;
-  --orange: #f59e0b;
-  --red: #ef4444;
-  --shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.9);
-  --card-radius: 32px;
+  --primary: #3b82f6;
+  --primary-glow: rgba(59, 130, 246, 0.45);
+  --accent: #06b6d4;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --radius: 28px;
+  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;
   background: 
-    radial-gradient(1400px 800px at 90% -10%, rgba(99, 102, 241, 0.28), transparent 60%),
-    radial-gradient(1000px 800px at 10% 20%, rgba(14, 165, 233, 0.22), transparent 60%),
-    radial-gradient(800px 600px at 50% 100%, rgba(16, 185, 129, 0.12), transparent 50%),
+    radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.12), transparent 40%),
     var(--bg);
   color:var(--text);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
@@ -43,240 +42,233 @@ button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
 
-/* מסך כניסה פרימיום בנטו גירי */
+/* Samsung Flagship Login Screen */
 #loginScreen{
   min-height:100vh;display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;
 }
 #loginScreen::before{
-  content:'';position:absolute;width:550px;height:550px;background:var(--brand);
-  filter:blur(160px);opacity:0.25;border-radius:50%;z-index:0;animation:pulseGlow 6s ease-in-out infinite alternate;
+  content:'';position:absolute;width:600px;height:600px;background:var(--primary);
+  filter:blur(180px);opacity:0.2;border-radius:50%;z-index:0;
 }
-@keyframes pulseGlow{0%{transform:scale(0.9);opacity:0.2} 100%{transform:scale(1.1);opacity:0.35}}
-
 .login-shell{width:min(440px,100%);position:relative;z-index:1}
 .brand-mark{
-  width:92px;height:92px;border-radius:30px;
-  background:linear-gradient(135deg, var(--brand), var(--cyan));
-  display:grid;place-items:center;font-size:42px;
-  box-shadow: 0 25px 50px var(--brand-glow), inset 0 2px 6px rgba(255,255,255,0.4);
+  width:96px;height:96px;border-radius:32px;
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  display:grid;place-items:center;font-size:44px;
+  box-shadow: 0 20px 40px var(--primary-glow), inset 0 2px 6px rgba(255,255,255,0.4);
   margin:0 auto 28px;border:1px solid rgba(255,255,255,0.3);
 }
 .login-card{
-  background: var(--panel);backdrop-filter: blur(35px);
-  -webkit-backdrop-filter: blur(35px);
-  border: 1px solid var(--line);border-radius: var(--card-radius);
+  background: var(--surface);backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid var(--border);border-radius: var(--radius);
   padding: 48px 38px;box-shadow: var(--shadow);text-align: center;
   position:relative;overflow:hidden;
 }
-.login-card::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-}
-.login-card h1{margin:0 0 8px;font-size:38px;font-weight:900;letter-spacing:-0.5px;color:#fff}
+.login-card h1{margin:0 0 8px;font-size:36px;font-weight:900;letter-spacing:-0.5px;color:#fff}
 .login-card .sub{color:var(--muted);margin:0 0 36px;font-size:14px;font-weight:500}
-
 .google-login-btn{
-  width:100%;border:0;border-radius:22px;height:60px;
-  background:#ffffff;color:#111827;font-weight:800;font-size:16px;
+  width:100%;border:0;border-radius:20px;height:60px;
+  background:#ffffff;color:#0f172a;font-weight:800;font-size:16px;
   display:flex;align-items:center;justify-content:center;gap:14px;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.google-login-btn:hover{background:#f8fafc;transform: translateY(-3px);box-shadow: 0 20px 45px rgba(14,165,233,0.3)}
-.login-note{font-size:12px;color:var(--muted);margin-top:30px;line-height:1.6}
+.google-login-btn:hover{background:#f1f5f9;transform: translateY(-3px);box-shadow: 0 15px 35px var(--primary-glow)}
+.login-note{font-size:12px;color:var(--muted);margin-top:28px;line-height:1.6}
 
 #mainApp{display:none;min-height:100vh}
-.shell{width:min(1320px,100%);margin:auto;padding:28px 20px 110px}
+.shell{width:min(1360px,100%);margin:auto;padding:24px 20px 110px}
 
-/* טופבר עצירי זכוכית */
+/* Flagship Topbar */
 .topbar{
   position:sticky;top:16px;z-index:40;
-  display:flex;align-items:center;justify-content:space-between;gap:14px;
-  background: var(--panel-glass);backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--line);border-radius: 24px;padding: 14px 22px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background: var(--surface);backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border);border-radius: 24px;padding: 14px 24px;
   box-shadow: 0 15px 35px rgba(0,0,0,0.5);margin-bottom: 28px;
 }
 .brand{display:flex;align-items:center;gap:14px}
-.brand-icon{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,var(--brand),var(--cyan));display:grid;place-items:center;font-weight:900;box-shadow:0 8px 20px var(--brand-glow)}
+.brand-icon{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--accent));display:grid;place-items:center;font-weight:900;box-shadow:0 8px 20px var(--primary-glow)}
 .brand strong{display:block;font-size:17px;letter-spacing:-0.3px}
 .brand small{display:block;color:var(--muted);font-size:11px}
 .top-actions{display:flex;gap:10px;align-items:center}
 .icon-btn,.ghost{
-  border:1px solid var(--line);background:rgba(255,255,255,0.04);
+  border:1px solid var(--border);background:rgba(255,255,255,0.03);
   color:var(--text);border-radius:16px;padding:10px 16px;font-weight:600;font-size:13px;
   transition:all 0.25s ease;
 }
-.icon-btn:hover,.ghost:hover{border-color:var(--cyan);background:rgba(14,165,233,0.12);transform:translateY(-1px)}
+.icon-btn:hover,.ghost:hover{border-color:var(--accent);background:rgba(6,182,212,0.1);transform:translateY(-1px)}
 .logout{color:#f87171;border-color:rgba(248,113,113,0.3)}
 .logout:hover{background:rgba(239,68,68,0.2)!important;border-color:#ef4444!important}
 
 .connection{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 15px var(--green)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--success);box-shadow:0 0 15px var(--success)}
 
-/* הירו בנטו גריד */
-.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;margin-bottom:24px}
+/* Flagship Hero Bento */
+.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:24px;margin-bottom:24px}
 .hero-card{
-  position:relative;overflow:hidden;border:1px solid var(--line);border-radius: var(--card-radius);padding:38px;
-  background:linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
-  box-shadow: var(--shadow);backdrop-filter: blur(20px);
+  position:relative;overflow:hidden;border:1px solid var(--border);border-radius:var(--radius);padding:40px;
+  background:linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(2, 6, 23, 0.95) 100%);
+  box-shadow: var(--shadow);backdrop-filter: blur(30px);
 }
-.eyebrow{color:#38bdf8;font-weight:800;font-size:12px;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:8px}
-.hero h1{font-size:clamp(30px, 4vw, 44px);margin:0 0 12px;font-weight:900;letter-spacing:-0.5px}
-.hero p{color:var(--muted);font-size:15px;line-height:1.6}
+.eyebrow{color:var(--accent);font-weight:800;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.hero h1{font-size:clamp(32px, 4.5vw, 48px);margin:0 0 12px;font-weight:900;letter-spacing:-0.8px}
+.hero p{color:var(--muted);font-size:16px;line-height:1.65}
 .hero-side{display:grid;gap:14px}
 .stat-card{
-  background:linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.85));
-  border:1px solid var(--line);border-radius:24px;padding:22px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.3);backdrop-filter: blur(15px);
-  transition:all 0.3s ease;
+  background:var(--surface);
+  border:1px solid var(--border);border-radius:24px;padding:22px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.3);backdrop-filter: blur(20px);
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.stat-card:hover{border-color:var(--line-glow);transform:translateY(-2px)}
+.stat-card:hover{border-color:var(--border-glow);transform:translateY(-3px)}
 .stat-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:0.5px}
-.stat-value{font-size:28px;font-weight:900;margin-top:6px;color:#fff}
+.stat-value{font-size:30px;font-weight:900;margin-top:6px;color:#fff}
 .stat-meta{font-size:12px;color:var(--muted);margin-top:4px}
 
-/* ניווט ראשי צף */
+/* Flagship Navigation Bar */
 .nav{display:flex;gap:12px;overflow:auto;padding:6px;margin-bottom:28px}
 .nav button{
-  flex:0 0 auto;border:1px solid var(--line);background:var(--panel-glass);
-  backdrop-filter:blur(15px);color:var(--muted);border-radius:18px;padding:14px 22px;font-weight:800;font-size:14px;
-  transition:all 0.25s ease;
+  flex:0 0 auto;border:1px solid var(--border);background:var(--surface);
+  backdrop-filter:blur(20px);color:var(--muted);border-radius:18px;padding:14px 22px;font-weight:800;font-size:14px;
+  transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.nav button:hover{color:#fff;border-color:var(--brand);transform:translateY(-2px)}
+.nav button:hover{color:#fff;border-color:var(--primary);transform:translateY(-2px)}
 .nav button.active{
   color:#fff;border-color:transparent;
-  background:linear-gradient(135deg, var(--brand), var(--cyan));
-  box-shadow: 0 10px 30px var(--brand-glow);
+  background:linear-gradient(135deg, var(--primary), var(--accent));
+  box-shadow: 0 10px 30px var(--primary-glow);
 }
 
 .page{display:none}
 .page.active{display:block}
 .grid{display:grid;gap:24px}
-.grid.two{grid-template-columns:1.35fr 0.65fr}
+.grid.two{grid-template-columns:1.4fr 0.6fr}
 .grid.three{grid-template-columns:repeat(3,1fr)}
 
 .card{
-  background: var(--panel);backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border: 1px solid var(--line);border-radius: var(--card-radius);padding: 30px;box-shadow: var(--shadow);
-  transition:all 0.3s ease;
+  background: var(--surface);backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--border);border-radius: var(--radius);padding: 32px;box-shadow: var(--shadow);
+  transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.card:hover{border-color:rgba(56, 189, 248, 0.3)}
-.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-.card-title{margin:0;font-size:21px;font-weight:900;letter-spacing:-0.3px}
+.card:hover{border-color:rgba(148, 163, 184, 0.25)}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.card-title{margin:0;font-size:22px;font-weight:900;letter-spacing:-0.4px}
 .muted{color:var(--muted)}
 
-.section-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.section-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
 .pill{
-  border:1px solid var(--line);background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);background:rgba(255,255,255,0.03);
   color:var(--muted);padding:10px 18px;border-radius:16px;font-weight:700;font-size:13px;transition:all 0.2s;
 }
-.pill:hover{border-color:var(--cyan);color:#fff}
-.pill.active{background:rgba(99,102,241,0.3);border-color:var(--brand);color:#fff;box-shadow:0 5px 15px rgba(99,102,241,0.2)}
+.pill:hover{border-color:var(--accent);color:#fff}
+.pill.active{background:rgba(59, 130, 246, 0.25);border-color:var(--primary);color:#fff;box-shadow:0 5px 15px rgba(59, 130, 246, 0.2)}
 
 .toolbar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-.search{flex:1;min-width:200px;height:52px;background:rgba(3,7,18,0.75);border:1px solid var(--line);border-radius:16px;color:white;padding:0 18px;outline:none;transition:all 0.2s}
-.search:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(14,165,233,0.2)}
-.select{height:52px;background:rgba(3,7,18,0.75);border:1px solid var(--line);border-radius:16px;color:white;padding:0 16px;outline:none;transition:all 0.2s}
-.select:focus{border-color:var(--cyan)}
+.search{flex:1;min-width:220px;height:54px;background:rgba(2, 6, 23, 0.8);border:1px solid var(--border);border-radius:18px;color:white;padding:0 20px;outline:none;transition:all 0.2s}
+.search:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(6, 182, 212, 0.25)}
+.select{height:54px;background:rgba(2, 6, 23, 0.8);border:1px solid var(--border);border-radius:18px;color:white;padding:0 18px;outline:none;transition:all 0.2s}
+.select:focus{border-color:var(--accent)}
 
 .weeks{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
 .week{
-  border:1px solid var(--line);background:linear-gradient(145deg,rgba(30,41,59,0.7),rgba(15,23,42,0.85));
-  border-radius:20px;padding:18px 12px;color:white;text-align:center;min-height:84px;transition:all 0.25s ease;cursor:pointer;
+  border:1px solid var(--border);background:linear-gradient(145deg,rgba(15, 23, 42, 0.8),rgba(2, 6, 23, 0.95));
+  border-radius:20px;padding:20px 14px;color:white;text-align:center;min-height:90px;transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);cursor:pointer;
 }
-.week:hover{border-color:var(--cyan);transform:translateY(-3px);box-shadow:0 10px 25px rgba(14,165,233,0.15)}
-.week.current{border-color:var(--orange);background:linear-gradient(145deg,rgba(60,42,15,0.85),rgba(20,16,10,0.95));box-shadow:inset 0 0 0 1px rgba(245,158,11,0.4), 0 10px 25px rgba(245,158,11,0.2)}
+.week:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 12px 30px rgba(6, 182, 212, 0.2)}
+.week.current{border-color:var(--warning);background:linear-gradient(145deg,rgba(60, 42, 15, 0.9),rgba(20, 16, 10, 0.98));box-shadow:inset 0 0 0 1px rgba(245, 158, 11, 0.5), 0 12px 30px rgba(245, 158, 11, 0.25)}
 .week small{display:block;color:var(--muted);margin-top:6px}
-.week .now{color:var(--orange);font-size:11px;font-weight:900}
+.week .now{color:var(--warning);font-size:11px;font-weight:900}
 
-.assignment{display:grid;grid-template-columns:68px 1fr auto;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.assignment{display:grid;grid-template-columns:70px 1fr auto;gap:18px;align-items:center;padding:20px 0;border-bottom:1px solid var(--border)}
 .assignment:last-child{border-bottom:0}
-.week-num{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.04);display:grid;place-items:center;font-weight:900;font-size:19px;border:1px solid var(--line);box-shadow:inset 0 2px 4px rgba(255,255,255,0.05)}
+.week-num{width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,0.04);display:grid;place-items:center;font-weight:900;font-size:20px;border:1px solid var(--border);box-shadow:inset 0 2px 4px rgba(255,255,255,0.06)}
 .tag{display:inline-flex;padding:6px 12px;border-radius:10px;font-size:11px;font-weight:800;background:rgba(255,255,255,0.05);color:var(--muted);margin-left:8px}
-.tag.purple{background:rgba(99,102,241,0.25);color:#c7d2fe}
-.tag.cyan{background:rgba(14,165,233,0.25);color:#7dd3fc}
-.tag.orange{background:rgba(245,158,11,0.25);color:#fde68a}
-.assignment h4{margin:0 0 4px;font-size:17px;font-weight:800}
-.assignment p{margin:0;color:var(--muted);font-size:13px}
-.badge{font-size:11px;color:#fff;background:rgba(255,255,255,0.06);border:1px solid var(--line);border-radius:12px;padding:6px 12px;font-weight:700}
-.badge.current{color:#fde68a;border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.18)}
+.tag.purple{background:rgba(59, 130, 246, 0.25);color:#93c5fd}
+.tag.cyan{background:rgba(6, 182, 212, 0.25);color:#67e8f9}
+.tag.orange{background:rgba(245, 158, 11, 0.25);color:#fde68a}
+.assignment h4{margin:0 0 4px;font-size:18px;font-weight:900}
+.assignment p{margin:0;color:var(--muted);font-size:13.5px}
+.badge{font-size:11.5px;color:#fff;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:14px;padding:7px 14px;font-weight:700}
+.badge.current{color:#fde68a;border-color:rgba(245, 158, 11, 0.5);background:rgba(245, 158, 11, 0.2)}
 
-.people{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-.person{border:1px solid var(--line);border-radius:20px;padding:18px;background:rgba(255,255,255,0.025);transition:all 0.2s}
-.person:hover{border-color:var(--line-glow)}
-.person strong{display:block;font-size:16px;margin-bottom:6px}
-.person span{font-size:12px;color:var(--muted);line-height:1.6}
+.people{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.person{border:1px solid var(--border);border-radius:22px;padding:20px;background:rgba(255,255,255,0.02);transition:all 0.25s}
+.person:hover{border-color:var(--border-glow)}
+.person strong{display:block;font-size:17px;margin-bottom:6px}
+.person span{font-size:13px;color:var(--muted);line-height:1.6}
 
-.status-row{display:flex;gap:12px;flex-wrap:wrap}
+.status-row{display:flex;gap:14px;flex-wrap:wrap}
 .status-btn{
-  border:1px solid var(--line);background:rgba(255,255,255,0.04);
-  color:white;border-radius:18px;padding:14px 20px;font-weight:700;transition:all 0.25s ease;
+  border:1px solid var(--border);background:rgba(255,255,255,0.03);
+  color:white;border-radius:18px;padding:14px 22px;font-weight:700;transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.status-btn:hover{border-color:var(--green);background:rgba(16,185,129,0.18);transform:translateY(-2px)}
-.status-btn.active{border-color:var(--green);background:rgba(16,185,129,0.3);color:#34d399;box-shadow:0 8px 20px rgba(16,185,129,0.2)}
+.status-btn:hover{border-color:var(--success);background:rgba(16, 185, 129, 0.2);transform:translateY(-2px)}
+.status-btn.active{border-color:var(--success);background:rgba(16, 185, 129, 0.35);color:#34d399;box-shadow:0 8px 25px rgba(16, 185, 129, 0.25)}
 
-.duty-panel{border:1px solid rgba(245,158,11,0.35);background:linear-gradient(145deg,rgba(40,28,10,0.8),rgba(20,15,8,0.95));border-radius:24px;padding:24px;box-shadow:0 15px 35px rgba(245,158,11,0.1)}
-.duty-panel h3{margin-top:0;font-size:19px;color:#fcd34d}
-.duty-list{display:grid;gap:10px}
-.duty-item{display:flex;align-items:center;justify-content:space-between;gap:14px;background:rgba(3,7,18,0.7);border:1px solid var(--line);border-radius:18px;padding:14px 18px;transition:all 0.2s}
-.duty-item:hover{border-color:var(--line-glow)}
-.status-chip{font-size:11px;padding:6px 12px;border-radius:10px;background:rgba(255,255,255,0.05);color:var(--muted);font-weight:700}
-.status-chip.done{background:rgba(16,185,129,0.25);color:#34d399}
-.status-chip.route{background:rgba(245,158,11,0.25);color:#fde68a}
+.duty-panel{border:1px solid rgba(245, 158, 11, 0.4);background:linear-gradient(145deg,rgba(40, 28, 10, 0.85),rgba(20, 16, 10, 0.98));border-radius:26px;padding:26px;box-shadow:0 20px 40px rgba(245, 158, 11, 0.15)}
+.duty-panel h3{margin-top:0;font-size:20px;color:#fcd34d}
+.duty-list{display:grid;gap:12px}
+.duty-item{display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(2, 6, 23, 0.75);border:1px solid var(--border);border-radius:20px;padding:16px 20px;transition:all 0.2s}
+.duty-item:hover{border-color:var(--border-glow)}
+.status-chip{font-size:11.5px;padding:6px 12px;border-radius:12px;background:rgba(255,255,255,0.05);color:var(--muted);font-weight:700}
+.status-chip.done{background:rgba(16, 185, 129, 0.25);color:#34d399}
+.status-chip.route{background:rgba(245, 158, 11, 0.25);color:#fde68a}
 
-/* צ'אט עטור זכוכית */
-.chat{height:620px;display:flex;flex-direction:column}
-.chat-list{flex:1;overflow:auto;padding:10px 4px 18px;display:flex;flex-direction:column;gap:14px}
-.msg{max-width:82%;padding:16px 18px;border:1px solid var(--line);background:rgba(255,255,255,0.035);border-radius:24px 24px 8px 24px;align-self:flex-start}
-.msg.me{align-self:flex-end;background:linear-gradient(135deg, rgba(99,102,241,0.35), rgba(14,165,233,0.35));border-color:rgba(14,165,233,0.45);border-radius:24px 24px 24px 8px}
-.msg .meta{display:flex;gap:12px;color:var(--muted);font-size:11px;margin-bottom:6px}
-.msg .author{color:#7dd3fc;font-weight:800}
-.msg .body{white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.65}
-.msg img,.msg video{max-width:100%;max-height:280px;border-radius:16px;margin-top:10px;display:block}
+/* Flagship Chat */
+.chat{height:650px;display:flex;flex-direction:column}
+.chat-list{flex:1;overflow:auto;padding:12px 6px 20px;display:flex;flex-direction:column;gap:16px}
+.msg{max-width:80%;padding:18px 20px;border:1px solid var(--border);background:rgba(255,255,255,0.035);border-radius:26px 26px 8px 26px;align-self:flex-start}
+.msg.me{align-self:flex-end;background:linear-gradient(135deg, rgba(59, 130, 246, 0.4), rgba(6, 182, 212, 0.4));border-color:rgba(6, 182, 212, 0.5);border-radius:26px 26px 26px 8px}
+.msg .meta{display:flex;gap:12px;color:var(--muted);font-size:11.5px;margin-bottom:6px}
+.msg .author{color:#38bdf8;font-weight:900}
+.msg .body{white-space:pre-wrap;word-break:break-word;font-size:14.5px;line-height:1.7}
+.msg img,.msg video{max-width:100%;max-height:300px;border-radius:18px;margin-top:12px;display:block}
 .msg-actions{display:flex;justify-content:flex-start;margin-top:6px}
 .delete{border:0;background:transparent;color:#f87171;font-size:12px;font-weight:700}
-.chat-compose{display:flex;gap:12px;border-top:1px solid var(--line);padding-top:18px}
-.chat-compose input{flex:1;height:52px;background:rgba(3,7,18,0.85);border:1px solid var(--line);border-radius:18px;color:white;padding:0 18px;outline:none}
-.attach{width:52px;border:1px solid var(--line);background:rgba(255,255,255,0.035);color:white;border-radius:18px;display:grid;place-items:center;transition:all 0.2s}
-.attach:hover{background:rgba(14,165,233,0.12);border-color:var(--cyan)}
-.send{border:0;background:linear-gradient(135deg,var(--brand),var(--cyan));color:white;border-radius:18px;padding:0 26px;font-weight:900;box-shadow:0 10px 25px var(--brand-glow)}
+.chat-compose{display:flex;gap:12px;border-top:1px solid var(--border);padding-top:20px}
+.chat-compose input{flex:1;height:54px;background:rgba(2, 6, 23, 0.9);border:1px solid var(--border);border-radius:18px;color:white;padding:0 20px;outline:none}
+.attach{width:54px;border:1px solid var(--border);background:rgba(255,255,255,0.04);color:white;border-radius:18px;display:grid;place-items:center;transition:all 0.2s}
+.attach:hover{background:rgba(6, 182, 212, 0.15);border-color:var(--accent)}
+.send{border:0;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;border-radius:18px;padding:0 28px;font-weight:900;box-shadow:0 12px 30px var(--primary-glow)}
 
-/* סקרים */
-.poll-card{background:rgba(255,255,255,0.025);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:14px;transition:all 0.2s}
-.poll-card:hover{border-color:var(--line-glow)}
-.poll-option{display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.7);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-top:10px;cursor:pointer;transition:all 0.2s}
-.poll-option:hover{border-color:var(--cyan);transform:translateY(-1px)}
+/* Polls */
+.poll-card{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:22px;padding:22px;margin-bottom:16px;transition:all 0.2s}
+.poll-card:hover{border-color:var(--border-glow)}
+.poll-option{display:flex;justify-content:space-between;align-items:center;background:rgba(2, 6, 23, 0.75);border:1px solid var(--border);border-radius:18px;padding:16px 20px;margin-top:12px;cursor:pointer;transition:all 0.2s}
+.poll-option:hover{border-color:var(--accent);transform:translateY(-1px)}
 
-/* לוח שנה */
+/* Calendar */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;text-align:center}
-.cal-day{background:rgba(255,255,255,0.025);border:1px solid var(--line);border-radius:16px;padding:14px 8px;min-height:85px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:all 0.25s ease}
-.cal-day:hover{border-color:var(--cyan);transform:translateY(-2px);background:rgba(14,165,233,0.05)}
-.cal-day.today{border-color:var(--cyan);background:rgba(14,165,233,0.12);box-shadow:0 0 20px rgba(14,165,233,0.2)}
+.cal-day{background:rgba(255,255,255,0.025);border:1px solid var(--border);border-radius:18px;padding:16px 8px;min-height:90px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:all 0.25s ease}
+.cal-day:hover{border-color:var(--accent);transform:translateY(-2px);background:rgba(6, 182, 212, 0.05)}
+.cal-day.today{border-color:var(--accent);background:rgba(6, 182, 212, 0.15);box-shadow:0 0 25px rgba(6, 182, 212, 0.25)}
 .cal-day strong{font-size:16px;display:block}
-.cal-day small{font-size:10px;color:var(--muted)}
-.cal-badge{font-size:9px;padding:3px 6px;border-radius:8px;margin-top:4px;font-weight:700}
-.cal-badge.meeting{background:rgba(245,158,11,0.25);color:#fde68a}
-.cal-badge.errand{background:rgba(16,185,129,0.25);color:#34d399}
+.cal-day small{font-size:10.5px;color:var(--muted)}
+.cal-badge{font-size:9.5px;padding:3px 8px;border-radius:10px;margin-top:4px;font-weight:700}
+.cal-badge.meeting{background:rgba(245, 158, 11, 0.25);color:#fde68a}
+.cal-badge.errand{background:rgba(16, 185, 129, 0.25);color:#34d399}
 
-.modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:100;display:grid;place-items:center;padding:20px}
-.modal-box{width:min(650px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:32px;padding:32px;box-shadow:var(--shadow)}
-.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.close{border:1px solid var(--line);background:rgba(255,255,255,0.04);color:white;border-radius:16px;width:42px;height:42px}
-.detail{border:1px solid var(--line);background:rgba(255,255,255,0.025);border-radius:22px;padding:20px;margin:12px 0}
+.modal{position:fixed;inset:0;background:rgba(2, 6, 23, 0.9);backdrop-filter:blur(12px);z-index:100;display:grid;place-items:center;padding:20px}
+.modal-box{width:min(650px,100%);max-height:90vh;overflow:auto;background:var(--surface);border:1px solid var(--border);border-radius:36px;padding:36px;box-shadow:var(--shadow)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.close{border:1px solid var(--border);background:rgba(255,255,255,0.04);color:white;border-radius:16px;width:44px;height:44px}
+.detail{border:1px solid var(--border);background:rgba(255,255,255,0.025);border-radius:24px;padding:22px;margin:14px 0}
 .detail-head{display:flex;justify-content:space-between;gap:10px}
-.detail h3{margin:0;font-size:17px}
-.topic{color:var(--muted);font-size:13px;margin-top:6px;line-height:1.6}
-.edit{border:0;background:rgba(99,102,241,0.3);color:#c7d2fe;border-radius:12px;padding:6px 14px;font-weight:700;font-size:12px}
+.detail h3{margin:0;font-size:18px}
+.topic{color:var(--muted);font-size:13.5px;margin-top:8px;line-height:1.7}
+.edit{border:0;background:rgba(59, 130, 246, 0.3);color:#93c5fd;border-radius:14px;padding:8px 16px;font-weight:700;font-size:12px}
 
-.notice{padding:16px 20px;border-radius:18px;background:rgba(255,255,255,0.035);border:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.5}
-.notice.good{border-color:rgba(16,185,129,0.35);background:rgba(16,185,129,0.08);color:#34d399}
+.notice{padding:18px 22px;border-radius:20px;background:rgba(255,255,255,0.035);border:1px solid var(--border);color:var(--muted);font-size:13.5px;line-height:1.6}
+.notice.good{border-color:rgba(16, 185, 129, 0.4);background:rgba(16, 185, 129, 0.1);color:#34d399}
 .empty{text-align:center;padding:40px;color:var(--muted)}
-.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(25px);opacity:0;pointer-events:none;background:#0f172a;border:1px solid var(--line);color:white;border-radius:18px;padding:14px 26px;z-index:200;transition:.3s;box-shadow:0 15px 40px rgba(0,0,0,0.6)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(30px);opacity:0;pointer-events:none;background:#020617;border:1px solid var(--border);color:white;border-radius:20px;padding:16px 28px;z-index:200;transition:.3s;box-shadow:0 20px 45px rgba(0,0,0,0.7)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .bottom-nav{display:none}
-.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:45px}
+.footer{text-align:center;color:var(--muted);font-size:12px;margin-top:50px}
 
 @media(max-width:850px){
   .hero,.grid.two,.grid.three{grid-template-columns:1fr}
@@ -284,21 +276,21 @@ button{cursor:pointer}
   .topbar{top:8px}.connection{display:none}
 }
 @media(max-width:560px){
-  .shell{padding:10px 10px 96px}
-  .topbar{border-radius:20px;padding:12px}
+  .shell{padding:10px 10px 100px}
+  .topbar{border-radius:22px;padding:12px}
   .brand small{display:none}
-  .hero-card,.card{border-radius:24px;padding:22px}
+  .hero-card,.card{border-radius:26px;padding:24px}
   .weeks{grid-template-columns:repeat(2,1fr)}
   .people{grid-template-columns:1fr}
-  .chat{height:calc(100vh - 250px);min-height:420px}
+  .chat{height:calc(100vh - 260px);min-height:440px}
   .bottom-nav{
     display:flex;position:fixed;bottom:12px;left:12px;right:12px;z-index:60;
-    background:rgba(15, 23, 42, 0.95);backdrop-filter:blur(25px);
-    border:1px solid var(--line);border-radius:24px;padding:10px;
-    box-shadow:0 20px 45px rgba(0,0,0,0.7);
+    background:rgba(2, 6, 23, 0.96);backdrop-filter:blur(30px);
+    border:1px solid var(--border);border-radius:26px;padding:10px;
+    box-shadow:0 25px 50px rgba(0,0,0,0.8);
   }
-  .bottom-nav button{flex:1;border:0;background:transparent;color:var(--muted);border-radius:16px;padding:8px 4px;font-size:11px;font-weight:700}
-  .bottom-nav button.active{background:rgba(99,102,241,0.35);color:#fff}
+  .bottom-nav button{flex:1;border:0;background:transparent;color:var(--muted);border-radius:18px;padding:8px 4px;font-size:11px;font-weight:700}
+  .bottom-nav button.active{background:rgba(59, 130, 246, 0.35);color:#fff}
   .bottom-nav b{display:block;font-size:18px;margin-bottom:2px}
   .nav{display:none}.top-actions .ghost{display:none}
 }
@@ -311,7 +303,7 @@ button{cursor:pointer}
     <div class="brand-mark">✦</div>
     <div class="login-card">
       <h1>סינכרון</h1>
-      <p class="sub">מרכז קבוצה עילית — כניסה מאובטחת</p>
+      <p class="sub">מרכז קבוצה פלאגשיפ — כניסה מאובטחת</p>
       <button class="google-login-btn" id="googleLoginBtn" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.17 21.31 7.27 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.19C.43 8.15 0 9.89 0 12s.43 3.85 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.17 2.69 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
         התחבר באמצעות חשבון Google
@@ -326,7 +318,7 @@ button{cursor:pointer}
 <header class="topbar">
   <div class="brand">
     <div class="brand-icon">✦</div>
-    <div><strong>סינכרון</strong><small>מרכז קבוצה עילית</small></div>
+    <div><strong>סינכרון</strong><small>מרכז קבוצה פלאגשיפ</small></div>
   </div>
   <div class="connection"><span class="dot" id="connectionDot"></span><span id="connectionText">מחובר לענן</span></div>
   <div class="top-actions">
@@ -337,7 +329,7 @@ button{cursor:pointer}
 
 <section class="hero">
   <div class="hero-card">
-    <div class="eyebrow">המרכז שלך</div>
+    <div class="eyebrow">המערכת שלך</div>
     <h1 id="welcomeTitle">שלום 👋</h1>
     <p id="welcomeSub">טוען את נתוני הקבוצה...</p>
   </div>
@@ -364,7 +356,7 @@ button{cursor:pointer}
   <button data-page="ai" id="nav-ai">🤖 עוזר חכם</button>
   <button data-page="polls" id="nav-polls">📊 סקרים</button>
   <button data-page="settings" id="nav-settings">⚙ הגדרות</button>
-  <button data-page="admin" id="adminNavBtn" class="hidden" style="border-color:var(--orange);color:var(--orange)">🛡️ ניהול</button>
+  <button data-page="admin" id="adminNavBtn" class="hidden" style="border-color:var(--warning);color:var(--warning)">🛡️ ניהול</button>
 </nav>
 
 <section id="page-home" class="page active">
@@ -395,7 +387,7 @@ button{cursor:pointer}
     <div class="card-head">
       <div>
         <h2 class="card-title">לוח השבועות המלא</h2>
-        <div class="muted" style="font-size:13px;margin-top:4px">מעקב משימות, חיפוש מהיר ועדכון נושאים מהענן.</div>
+        <div class="muted" style="font-size:13.5px;margin-top:4px">מעקב משימות, חיפוש מהיר ועדכון נושאים מהענן.</div>
       </div>
       <span class="badge current" id="scheduleCurrent">שבוע —</span>
     </div>
@@ -427,9 +419,9 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">⚖️ יומן החלטות צוותיות</h2></div>
       <div style="margin-bottom:14px;display:flex;gap:10px">
         <input id="newDecisionInput" class="search" placeholder="הכנס החלטה קבוצתית חדשה...">
-        <button class="google-login-btn" id="addDecisionBtn" style="background:var(--brand);color:#fff;width:110px;height:52px;font-size:13px;box-shadow:none" type="button">הוסף</button>
+        <button class="google-login-btn" id="addDecisionBtn" style="background:var(--primary);color:#fff;width:110px;height:54px;font-size:13.5px;box-shadow:none" type="button">הוסף</button>
       </div>
-      <div id="decisionsList" style="max-height:350px;overflow:auto"></div>
+      <div id="decisionsList" style="max-height:360px;overflow:auto"></div>
     </div>
   </div>
 </section>
@@ -440,7 +432,7 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">📦 מעקב ציוד ושאילים (P2P)</h2></div>
       <div style="margin-bottom:14px;display:grid;gap:10px">
         <input id="gearNameInput" class="search" style="width:100%" placeholder="שם הציוד (למשל: כבל מאריך, מטען)">
-        <button class="google-login-btn" id="addGearBtn" style="background:var(--green);color:#fff;height:48px;font-size:13px;box-shadow:none" type="button">רשום שאילת ציוד</button>
+        <button class="google-login-btn" id="addGearBtn" style="background:var(--success);color:#fff;height:50px;font-size:13.5px;box-shadow:none" type="button">רשום שאילת ציוד</button>
       </div>
       <div id="gearList" style="max-height:280px;overflow:auto"></div>
     </div>
@@ -448,7 +440,7 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">📋 פקמ"ז דיגיטלי ונהלים</h2></div>
       <div style="margin-bottom:14px;display:grid;gap:10px">
         <input id="logbookInput" class="search" style="width:100%" placeholder="תיעוד אירוע / הנחיה מבצעית...">
-        <button class="google-login-btn" id="addLogbookBtn" style="background:var(--brand);color:#fff;height:48px;font-size:13px;box-shadow:none" type="button">רשום ביוממבצעים</button>
+        <button class="google-login-btn" id="addLogbookBtn" style="background:var(--primary);color:#fff;height:50px;font-size:13.5px;box-shadow:none" type="button">רשום ביוממבצעים</button>
       </div>
       <div id="logbookList" style="max-height:280px;overflow:auto"></div>
     </div>
@@ -457,11 +449,11 @@ button{cursor:pointer}
 
 <section id="page-community" class="page">
   <div class="grid two">
-    <div class="card chat" style="height:620px">
+    <div class="card chat" style="height:640px">
       <div class="card-head">
         <div>
           <h2 class="card-title">צ'אט קבוצתי חי</h2>
-          <div class="muted" style="font-size:13px">הודעות ומדיה בזמן אמת מול ענן Firebase.</div>
+          <div class="muted" style="font-size:13.5px">הודעות ומדיה בזמן אמת מול ענן Firebase.</div>
         </div>
         <span class="badge" id="chatCount">0 הודעות</span>
       </div>
@@ -473,19 +465,19 @@ button{cursor:pointer}
       </div>
     </div>
     <div class="grid" style="grid-template-rows:1fr 1fr;gap:24px">
-      <div class="card" style="max-height:295px;overflow:auto">
+      <div class="card" style="max-height:300px;overflow:auto">
         <div class="card-head"><h2 class="card-title">🏆 קיר פירגונים ושבחים</h2></div>
         <div style="margin-bottom:12px;display:flex;gap:8px">
           <input id="shoutoutInput" class="search" placeholder="פרגן למישהו בצוות...">
-          <button class="google-login-btn" id="addShoutoutBtn" style="background:var(--orange);color:#fff;width:90px;height:46px;font-size:12px;box-shadow:none" type="button">פרגן</button>
+          <button class="google-login-btn" id="addShoutoutBtn" style="background:var(--warning);color:#fff;width:95px;height:48px;font-size:12.5px;box-shadow:none" type="button">פרגן</button>
         </div>
         <div id="shoutoutsList"></div>
       </div>
-      <div class="card" style="max-height:295px;overflow:auto">
+      <div class="card" style="max-height:300px;overflow:auto">
         <div class="card-head"><h2 class="card-title">😂 מרכז הומור ו־Crew Lore</h2></div>
         <div style="margin-bottom:12px;display:flex;gap:8px">
           <input id="loreInput" class="search" placeholder="הוסף בדיחה פנימית / משפט...">
-          <button class="google-login-btn" id="addLoreBtn" style="background:var(--brand);color:#fff;width:90px;height:46px;font-size:12px;box-shadow:none" type="button">הוסף</button>
+          <button class="google-login-btn" id="addLoreBtn" style="background:var(--primary);color:#fff;width:95px;height:48px;font-size:12.5px;box-shadow:none" type="button">הוסף</button>
         </div>
         <div id="loreList"></div>
       </div>
@@ -498,7 +490,7 @@ button{cursor:pointer}
     <div class="card-head">
       <div>
         <h2 class="card-title">🤖 עוזר חכם לצוות</h2>
-        <div class="muted" style="font-size:13px">שאל שאלות על לוח השבועות, התורנויות או משימות הצוות.</div>
+        <div class="muted" style="font-size:13.5px">שאל שאלות על לוח השבועות, התורנויות או משימות הצוות.</div>
       </div>
     </div>
     <div id="aiChatList" class="chat-list">
@@ -523,44 +515,44 @@ button{cursor:pointer}
     <div class="card">
       <div class="card-head"><h2 class="card-title">➕ יצירת סקר חדש</h2></div>
       <div style="margin-bottom:14px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">שאלת הסקר</label>
+        <label class="muted" style="font-size:13.5px;display:block;margin-bottom:6px">שאלת הסקר</label>
         <input id="pollQuestionInput" class="search" style="width:100%" placeholder="לדוגמה: באיזו שעה יוצאים השבוע?">
       </div>
       <div style="margin-bottom:14px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">אפשרויות (מופרדות בפסיק)</label>
+        <label class="muted" style="font-size:13.5px;display:block;margin-bottom:6px">אפשרויות (מופרדות בפסיק)</label>
         <input id="pollOptionsInput" class="search" style="width:100%" placeholder="אפשרות 1, אפשרות 2, אפשרות 3">
       </div>
-      <button class="google-login-btn" id="createPollBtn" style="background:var(--brand);color:#fff;height:52px;font-size:14px;box-shadow:none" type="button">פרסם סקר לקבוצה</button>
+      <button class="google-login-btn" id="createPollBtn" style="background:var(--primary);color:#fff;height:54px;font-size:14.5px;box-shadow:none" type="button">פרסם סקר לקבוצה</button>
     </div>
   </div>
 </section>
 
-<!-- פאנל ניהול סגור ומוסתר לחלוטין למי שאינו מנהל -->
+<!-- פאנל ניהול פלאגשיפ סגור ומוסתר -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
       <div class="card-head"><h2 class="card-title">🛡️ ניהול תורנויות שבועיות וראשיות</h2></div>
       <div style="margin-bottom:18px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">בחר חניך תורן ראשי</label>
+        <label class="muted" style="font-size:13.5px;display:block;margin-bottom:6px">בחר חניך תורן ראשי</label>
         <select id="adminDutySelector" class="select" style="width:100%"><option value="">בחר חניך תורן...</option></select>
       </div>
-      <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:52px;font-size:14px;margin-bottom:24px;box-shadow:none" type="button">שמור תורן מעודכן בענן</button>
+      <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--primary);color:#fff;height:54px;font-size:14.5px;margin-bottom:24px;box-shadow:none" type="button">שמור תורן מעודכן בענן</button>
       
-      <hr style="border:0;border-top:1px solid var(--line);margin:24px 0">
+      <hr style="border:0;border-top:1px solid var(--border);margin:24px 0">
 
-      <h3 style="font-size:17px;margin-bottom:12px">➕ הוספת תורנות דינמית להיום (למשל: אוכל)</h3>
+      <h3 style="font-size:18px;margin-bottom:12px">➕ הוספת תורנות דינמית להיום (למשל: אוכל)</h3>
       <div style="margin-bottom:12px">
         <input id="newDynamicTaskInput" class="search" style="width:100%" placeholder="שם המשימה (למשל: לקיחת אוכל)">
       </div>
       <div style="margin-bottom:12px">
         <select id="newDynamicPersonSelect" class="select" style="width:100%"><option value="">בחר חבר צוות...</option></select>
       </div>
-      <button class="google-login-btn" id="addDynamicTaskBtn" style="background:var(--green);color:#fff;height:50px;font-size:14px;box-shadow:none" type="button">הוסף תורנות ליומן</button>
+      <button class="google-login-btn" id="addDynamicTaskBtn" style="background:var(--success);color:#fff;height:52px;font-size:14.5px;box-shadow:none" type="button">הוסף תורנות ליומן</button>
     </div>
 
     <div class="card">
       <div class="card-head"><h2 class="card-title">👁️ ניהול תצוגה והסתרת כרטיסיות</h2></div>
-      <p class="muted" style="font-size:12px;margin-bottom:14px">סמן מה להסתיר מממשק המשתמשים:</p>
+      <p class="muted" style="font-size:12.5px;margin-bottom:14px">סמן מה להסתיר מממשק המשתמשים:</p>
       <div style="display:grid;gap:10px" id="visibilityToggles">
         <label><input type="checkbox" data-hide="schedule"> הסתר את לוח השבועות</label>
         <label><input type="checkbox" data-hide="calendar"> הסתר את לוח השנה</label>
@@ -575,19 +567,19 @@ button{cursor:pointer}
   <div class="grid two" style="margin-top:24px">
     <div class="card">
       <div class="card-head"><h2 class="card-title">🔒 ניהול מורשי כניסה (Whitelist)</h2></div>
-      <p class="muted" style="font-size:12px;margin-bottom:10px">הוסף אימייל שרשאי להיכנס לאתר:</p>
+      <p class="muted" style="font-size:12.5px;margin-bottom:10px">הוסף אימייל שרשאי להיכנס לאתר:</p>
       <div style="margin-bottom:12px;display:flex;gap:8px">
         <input id="newWhitelistInput" class="search" placeholder="user@gmail.com">
-        <button class="google-login-btn" id="addWhitelistBtn" style="background:var(--green);color:#fff;width:100px;height:52px;font-size:13px;box-shadow:none" type="button">הוסף</button>
+        <button class="google-login-btn" id="addWhitelistBtn" style="background:var(--success);color:#fff;width:105px;height:54px;font-size:13px;box-shadow:none" type="button">הוסף</button>
       </div>
       <div id="whitelistContainer" class="notice" style="max-height:120px;overflow:auto">טוען מורשים...</div>
     </div>
     <div class="card">
       <div class="card-head"><h2 class="card-title">🔑 ניהול גישה לפאנל הניהול</h2></div>
-      <p class="muted" style="font-size:12px;margin-bottom:10px">הוסף אימייל שרשאי להיכנס לפאנל הניהול:</p>
+      <p class="muted" style="font-size:12.5px;margin-bottom:10px">הוסף אימייל שרשאי להיכנס לפאנל הניהול:</p>
       <div style="margin-bottom:12px;display:flex;gap:8px">
         <input id="newAdminInput" class="search" placeholder="admin@gmail.com">
-        <button class="google-login-btn" id="addAdminBtn" style="background:var(--brand);color:#fff;width:100px;height:52px;font-size:13px;box-shadow:none" type="button">הוסף מנהל</button>
+        <button class="google-login-btn" id="addAdminBtn" style="background:var(--primary);color:#fff;width:105px;height:54px;font-size:13px;box-shadow:none" type="button">הוסף מנהל</button>
       </div>
       <div id="adminsContainer" class="notice" style="max-height:120px;overflow:auto">טוען מנהלים...</div>
     </div>
@@ -598,7 +590,7 @@ button{cursor:pointer}
     <div style="margin-bottom:14px">
       <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
     </div>
-    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:52px;font-size:14px;box-shadow:none" type="button">שדור הודעת פוש ורטט לכולם</button>
+    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--warning),var(--danger));color:#fff;height:54px;font-size:14.5px;box-shadow:none" type="button">שדור הודעת פוש ורטט לכולם</button>
   </div>
 </section>
 
@@ -608,7 +600,7 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">הגדרות מתקדם והתרעות</h2></div>
       <div class="notice good" style="margin-bottom:18px">מחובר כעת באמצעות חשבון Google: <strong id="settingsUser">—</strong></div>
       <div style="margin-top:18px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:8px">סינון התראות בדפדפן ורטט</label>
+        <label class="muted" style="font-size:13.5px;display:block;margin-bottom:8px">סינון התראות בדפדפן ורטט</label>
         <select id="notifPref" class="select" style="width:100%">
           <option value="all">קבל התראה ורטט מכל הודעה חדשה</option>
           <option value="duty">חניך תורן ומערכת בלבד (שקט מכל השאר)</option>
@@ -617,15 +609,15 @@ button{cursor:pointer}
     </div>
     <div class="card">
       <div class="card-head"><h2 class="card-title">מידע מערכת</h2></div>
-      <p class="muted" style="font-size:14px;line-height:1.65">
-        מערכת סינכרון קבוצתית עילית מאובטחת המנוהלת מול Firebase Firestore.<br>
+      <p class="muted" style="font-size:14.5px;line-height:1.7">
+        מערכת סינכרון קבוצתית פלאגשיפ מאובטחת המנוהלת מול Firebase Firestore.<br>
         הגישה מבוקרת בקפדנות לפי אימיילים מורשים.
       </p>
     </div>
   </div>
 </section>
 
-<footer class="footer">סינכרון קבוצתי עילית · פותח עבור צוות 121 · מחובר ל־Firebase</footer>
+<footer class="footer">סינכרון קבוצתי פלאגשיפ · פותח עבור צוות 121 · מחובר ל־Firebase</footer>
 </div>
 
 <div class="bottom-nav" id="bottomNav">
@@ -1103,9 +1095,9 @@ function renderVibeAndMvp() {
   box.innerHTML = `
     <div style="margin-bottom:14px">
       <div class="muted" style="font-size:12px;margin-bottom:4px">מנטרת השבוע לצוות:</div>
-      <div style="font-weight:700;font-size:14px;color:#38bdf8">${motto}</div>
+      <div style="font-weight:700;font-size:14.5px;color:#38bdf8">${motto}</div>
     </div>
-    <div style="border-top:1px solid var(--line);padding-top:12px">
+    <div style="border-top:1px solid var(--border);padding-top:12px">
       <div class="muted" style="font-size:12px;margin-bottom:4px">🏆 השבוע בצוות (MVP):</div>
       <div style="font-weight:800;font-size:15px;color:#fcd34d">צוות 121 מתקדם באחידות ובעוצמה!</div>
     </div>
@@ -1282,7 +1274,7 @@ function renderDecisions() {
   if (!decisionsData.length) { container.innerHTML = '<div class="empty">אין החלטות רשומות עדיין.</div>'; return; }
   container.innerHTML = decisionsData.map((d, idx) => `
     <div class="duty-item" style="margin-bottom:10px">
-      <div><strong>${d.text}</strong><div class="muted" style="font-size:11px">${d.author} · ${d.date}</div></div>
+      <div><strong>${d.text}</strong><div class="muted" style="font-size:11.5px">${d.author} · ${d.date}</div></div>
     </div>
   `).join('');
 }
@@ -1307,7 +1299,7 @@ function renderGear() {
   if (!gearData.length) { container.innerHTML = '<div class="empty">אין פריטי ציוד רשומים כרגע.</div>'; return; }
   container.innerHTML = gearData.map((g, idx) => `
     <div class="duty-item" style="margin-bottom:8px">
-      <div><strong>${g.name}</strong><div class="muted" style="font-size:11px">אצל: ${g.holder} (${g.date})</div></div>
+      <div><strong>${g.name}</strong><div class="muted" style="font-size:11.5px">אצל: ${g.holder} (${g.date})</div></div>
       <button class="edit" onclick="removeGear(${idx})">החזרתי</button>
     </div>
   `).join('');
@@ -1339,7 +1331,7 @@ function renderLogbook() {
   if (!logbookData.length) { container.innerHTML = '<div class="empty">יומן המבצעים ריק.</div>'; return; }
   container.innerHTML = logbookData.map(l => `
     <div class="duty-item" style="margin-bottom:8px">
-      <div><strong>${l.text}</strong><div class="muted" style="font-size:11px">${l.author} · ${l.time}</div></div>
+      <div><strong>${l.text}</strong><div class="muted" style="font-size:11.5px">${l.author} · ${l.time}</div></div>
     </div>
   `).join('');
 }
@@ -1362,7 +1354,7 @@ function renderShoutouts() {
   const container = document.getElementById('shoutoutsList');
   if (!container) return;
   if (!shoutoutsData.length) { container.innerHTML = '<div class="empty">אין פירגונים עדיין.</div>'; return; }
-  container.innerHTML = shoutoutsData.map(s => `<div class="notice" style="margin-bottom:8px">💬 "${s.text}" <strong style="color:var(--cyan)">- ${s.author}</strong></div>`).join('');
+  container.innerHTML = shoutoutsData.map(s => `<div class="notice" style="margin-bottom:8px">💬 "${s.text}" <strong style="color:var(--accent)">- ${s.author}</strong></div>`).join('');
 }
 
 /* Crew Lore */
@@ -1383,7 +1375,7 @@ function renderLore() {
   const container = document.getElementById('loreList');
   if (!container) return;
   if (!loreData.length) { container.innerHTML = '<div class="empty">אין בדיחות פנימיות רשומות.</div>'; return; }
-  container.innerHTML = loreData.map(l => `<div class="notice" style="margin-bottom:8px">😂 "${l.text}" <strong style="color:var(--orange)">- ${l.author}</strong></div>`).join('');
+  container.innerHTML = loreData.map(l => `<div class="notice" style="margin-bottom:8px">😂 "${l.text}" <strong style="color:var(--warning)">- ${l.author}</strong></div>`).join('');
 }
 
 const aiSend = document.getElementById('aiSend');
@@ -1474,9 +1466,9 @@ function renderPolls() {
       const hasVoted = opt.votes.includes(currentUser);
       const count = opt.votes.length;
       const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
-      return `<div class="poll-option" onclick="votePoll('${poll.id}', ${idx})" style="border-color: ${hasVoted ? 'var(--green)' : 'var(--line)'}"><span>${opt.text} ${hasVoted ? ' ✓' : ''}</span><span class="muted">${count} (${pct}%)</span></div>`;
+      return `<div class="poll-option" onclick="votePoll('${poll.id}', ${idx})" style="border-color: ${hasVoted ? 'var(--success)' : 'var(--border)'}"><span>${opt.text} ${hasVoted ? ' ✓' : ''}</span><span class="muted">${count} (${pct}%)</span></div>`;
     }).join('');
-    return `<div class="poll-card"><h3 style="margin:0 0 10px;font-size:17px">${poll.question}</h3><div class="muted" style="font-size:11px;margin-bottom:12px">נוצר ע"י: ${poll.author}</div>${optsHtml}</div>`;
+    return `<div class="poll-card"><h3 style="margin:0 0 10px;font-size:18px">${poll.question}</h3><div class="muted" style="font-size:11.5px;margin-bottom:12px">נוצר ע"י: ${poll.author}</div>${optsHtml}</div>`;
   }).join('');
 }
 
@@ -1625,7 +1617,7 @@ function renderSecurityAdminUI() {
     wContainer.innerHTML = whitelistEmails.map((email, idx) => `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
         <span>${email}</span>
-        ${email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() ? `<button style="border:0;background:rgba(239,68,68,0.25);color:#f87171;border-radius:8px;padding:3px 10px;font-size:11px" onclick="removeWhitelistEmail(${idx})">הסר</button>` : '<span style="font-size:11px;color:var(--orange)">ראשי</span>'}
+        ${email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() ? `<button style="border:0;background:rgba(239,68,68,0.25);color:#f87171;border-radius:8px;padding:3px 10px;font-size:11px" onclick="removeWhitelistEmail(${idx})">הסר</button>` : '<span style="font-size:11px;color:var(--warning)">ראשי</span>'}
       </div>
     `).join('');
   }
@@ -1635,7 +1627,7 @@ function renderSecurityAdminUI() {
     aContainer.innerHTML = adminEmails.map((email, idx) => `
       <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
         <span>${email}</span>
-        ${email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() ? `<button style="border:0;background:rgba(239,68,68,0.25);color:#f87171;border-radius:8px;padding:3px 10px;font-size:11px" onclick="removeAdminEmail(${idx})">הסר</button>` : '<span style="font-size:11px;color:var(--orange)">ראשי</span>'}
+        ${email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() ? `<button style="border:0;background:rgba(239,68,68,0.25);color:#f87171;border-radius:8px;padding:3px 10px;font-size:11px" onclick="removeAdminEmail(${idx})">הסר</button>` : '<span style="font-size:11px;color:var(--warning)">ראשי</span>'}
       </div>
     `).join('');
   }
