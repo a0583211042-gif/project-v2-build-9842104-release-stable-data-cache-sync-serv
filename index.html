@@ -227,7 +227,8 @@ button{cursor:pointer}
 
 /* לוח שנה */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center}
-.cal-day{background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:14px;padding:12px 6px;min-height:75px;display:flex;flex-direction:column;justify-content:space-between}
+.cal-day{background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:14px;padding:12px 6px;min-height:75px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:all 0.2s}
+.cal-day:hover{border-color:var(--cyan)}
 .cal-day.today{border-color:var(--cyan);background:rgba(14,165,233,0.08)}
 .cal-day strong{font-size:15px;display:block}
 .cal-day small{font-size:10px;color:var(--muted)}
@@ -391,7 +392,7 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- עמוד לוח שנה חדש (עברי/לועזי + ימי ישיבה/סידורים) -->
+<!-- לוח שנה עברי / לועזי -->
 <section id="page-calendar" class="page">
   <div class="card">
     <div class="card-head">
@@ -467,7 +468,7 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- פאנל ניהול מורחב ומוסתר לחלוטין למי שאינו מנהל -->
+<!-- פאנל ניהול מורחב ומוסתר למי שאינו מנהל -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
@@ -619,9 +620,9 @@ const PEOPLE = {
 };
 
 let whitelistEmails = [...INITIAL_EMAILS];
-let adminEmails = [SUPER_ADMIN_EMAIL];
+let adminEmails = [SUPER_ADMIN_EMAIL, "0583211042@gmail.com"];
 let hiddenPagesConfig = {};
-let calendarNotes = {}; // מילון לניהול ימי ישיבה/סידורים לפי תאריך YYYY-MM-DD
+let calendarNotes = {};
 
 const RANDOM_MESSAGES = [
   "\"החכמה היא לא לדעת מה להגיד, אלא מתי להגיד.\" 💡",
@@ -682,12 +683,12 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// טעינה וסנכרון של רשימות האבטחה, הגדרות הסתרה ולוח שנה מהענן
+// טעינה וסנכרון של רשימות האבטחה מהענן
 db.collection("groupData").doc("securityConfig").onSnapshot(async (doc) => {
   if (doc.exists) {
     const data = doc.data();
-    if (data.whitelist) whitelistEmails = data.whitelist;
-    if (data.admins) adminEmails = data.admins;
+    if (data.whitelist && data.whitelist.length > 0) whitelistEmails = data.whitelist;
+    if (data.admins && data.admins.length > 0) adminEmails = data.admins;
     if (data.hiddenPages) hiddenPagesConfig = data.hiddenPages;
     if (data.calendarNotes) calendarNotes = data.calendarNotes;
   } else {
@@ -740,7 +741,7 @@ function verifyUserAccess(user) {
   const email = (user.email || "").toLowerCase().trim();
   const name = user.displayName || email;
 
-  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase());
+  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase() || email === "0583211042@gmail.com");
   const isWhitelisted = isSuper || whitelistEmails.map(e => e.toLowerCase().trim()).includes(email);
 
   if (!isWhitelisted) {
@@ -758,7 +759,7 @@ function verifyUserAccess(user) {
 
 function checkAdminAccessPrivileges() {
   const email = (currentEmail || "").toLowerCase().trim();
-  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase());
+  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase() || email === "0583211042@gmail.com");
   const isAdmin = isSuper || adminEmails.map(e => e.toLowerCase().trim()).includes(email);
 
   const adminNavBtn = document.getElementById('adminNavBtn');
@@ -779,7 +780,6 @@ function checkAdminAccessPrivileges() {
 }
 
 function applyHiddenPagesUI() {
-  // החלת הסתרת עמודים/כרטיסיות בהתאם להגדרות המנהל בענן
   const scheduleNav = document.getElementById('nav-schedule');
   const bScheduleNav = document.getElementById('bnav-schedule');
   const schedulePage = document.getElementById('page-schedule');
@@ -828,7 +828,6 @@ function applyHiddenPagesUI() {
     if (bPollsNav) bPollsNav.classList.remove('hidden');
   }
 
-  // סימון התיבות בפאנל הניהול
   document.querySelectorAll('#visibilityToggles input').forEach(input => {
     const key = input.dataset.hide;
     input.checked = !!hiddenPagesConfig[key];
@@ -857,16 +856,13 @@ function startApp() {
     if (doc.exists) {
       const data = doc.data();
       currentDuty = data.currentDuty || "";
-      
       memberStatuses = data.memberStatuses || {};
 
-      // בדיקת איפוס יומי אוטומטי בשעה 01:00 בלילה
       const now = new Date();
       const todayDateStr = now.toDateString();
       const lastResetDate = data.lastResetDate || "";
       const currentHour = now.getHours();
 
-      // אם עבר ליום חדש והשעה היא לפחות 01:00 (או שהתאריך שונה לחלוטין)
       if (lastResetDate !== todayDateStr && currentHour >= 1) {
         memberStatuses = {};
         db.collection("groupData").doc("metaMeta").set({ 
@@ -1056,9 +1052,6 @@ function renderScheduleWeeks() {
   }
 }
 
-// -------------------------------------------------------------
-// רנדור לוח שנה עברי + לועזי עם בחירת יום ישיבה / סידורים
-// -------------------------------------------------------------
 function renderCalendar() {
   const container = document.getElementById('calendarContainer');
   if (!container) return;
@@ -1074,7 +1067,6 @@ function renderCalendar() {
   const daysNames = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'שבת'];
   daysNames.forEach(d => { gridHtml += `<div style="font-weight:800;color:var(--muted);font-size:12px;padding:6px 0">${d}</div>`; });
 
-  // ריווח לתחילת החודש
   const startDayOfWeek = firstDay.getDay();
   for (let i = 0; i < startDayOfWeek; i++) {
     gridHtml += `<div></div>`;
@@ -1087,7 +1079,6 @@ function renderCalendar() {
     const dateStr = currDate.toISOString().split('T')[0];
     const isToday = currDate.toDateString() === now.toDateString();
     
-    // המרה לתאריך עברי
     let hebrewDateStr = "";
     try {
       hebrewDateStr = hebrewFormatter.format(currDate);
@@ -1113,8 +1104,7 @@ function renderCalendar() {
 }
 
 window.openCalendarDayModal = function(dateStr) {
-  const currentNote = calendarNotes[dateStr] || "none";
-  let choice = prompt("בחר הגדרה ליום (" + dateStr + "):\n1 - סרגל רגיל (ללא סימון)\n2 - יום ישיבה\n3 - יום סידורים\n\nהקש 1, 2 או 3:");
+  let choice = prompt("בחר הגדרה ליום (" + dateStr + "):\n1 - איפוס / ללא סימון\n2 - יום ישיבה\n3 - יום סידורים\n\nהקש 1, 2 או 3:");
   if (choice === "2") {
     calendarNotes[dateStr] = "meeting";
   } else if (choice === "3") {
@@ -1124,7 +1114,7 @@ window.openCalendarDayModal = function(dateStr) {
   } else {
     return;
   }
-  db.collection("groupData").doc("securityConfig").set({ calendarNotes }, { merge: true });
+  db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
   showToast("לוח השנה עודכן בהצלחה!");
   renderCalendar();
 };
@@ -1463,7 +1453,6 @@ window.removeAdminEmail = async function(idx) {
   showToast("הרשאת הניהול הוסרה!");
 };
 
-// שמירת מצב ההסתרה של כרטיסיות בענן
 document.querySelectorAll('#visibilityToggles input').forEach(input => {
   input.addEventListener('change', async () => {
     const key = input.dataset.hide;
