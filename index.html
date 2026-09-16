@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
-<title>סינכרון | מרכז הקבוצה המאובטח</title>
+<title>סינכרון | מרכז הקבוצה</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -268,12 +268,12 @@ button{cursor:pointer}
     <div class="brand-mark">✦</div>
     <div class="login-card">
       <h1>סינכרון</h1>
-      <p class="sub">מרכז הקבוצה החכם — כניסה מאובטחת</p>
+      <p class="sub">מרכז הקבוצה החכם — כניסה מהירה</p>
       <button class="google-login-btn" id="googleLoginBtn" type="button">
         <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.13 0-5.78-2.11-6.73-4.96H1.19v3.15C3.17 21.31 7.27 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.24c-.25-.72-.38-1.49-.38-2.24s.13-1.52.38-2.24V6.61H1.19C.43 8.15 0 9.89 0 12s.43 3.85 1.19 5.39l4.08-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.27 0 3.17 2.69 1.19 6.61l4.08 3.15c.95-2.85 3.6-4.96 6.73-4.96z"/></svg>
         התחבר באמצעות חשבון Google
       </button>
-      <p class="login-note">כניסה מאובטחת ומורשית בלבד.</p>
+      <p class="login-note">כניסה חלקה ומאובטחת לצוות.</p>
     </div>
   </div>
 </section>
@@ -433,7 +433,6 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- פאנל ניהול המאפשר הוספה והסרה של אימיילים מורשים -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
@@ -445,13 +444,8 @@ button{cursor:pointer}
       <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px" type="button">שמור תורן מעודכן בענן</button>
     </div>
     <div class="card">
-      <div class="card-head"><h2 class="card-title">📧 ניהול אימיילים מורשים (Whitelist)</h2></div>
-      <p class="muted" style="font-size:12px;margin-bottom:10px">הוסף כתובת אימייל שצריכה גישה למערכת:</p>
-      <div style="margin-bottom:12px;display:flex;gap:8px">
-        <input id="newEmailInput" class="search" placeholder="user@gmail.com">
-        <button class="google-login-btn" id="addEmailBtn" style="background:var(--green);color:#fff;width:100px;height:48px;font-size:14px" type="button">הוסף</button>
-      </div>
-      <div id="allowedEmailsContainer" class="notice" style="max-height:140px;overflow:auto">טוען רשימה...</div>
+      <div class="card-head"><h2 class="card-title">👥 ניהול משתמשים מחוברים</h2></div>
+      <div id="activeUsersList" class="notice" style="max-height:160px;overflow:auto">טוען משתמשים...</div>
     </div>
   </div>
   <div class="card" style="margin-top:20px">
@@ -480,7 +474,7 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">מידע מערכת</h2></div>
       <p class="muted" style="font-size:14px;line-height:1.6">
         מערכת סינכרון קבוצתית מתקדמת מחוברת לענן Firebase Firestore.<br>
-        הגישה מוגבלת אך ורק לאימיילים המורשים במערכת.
+        התחברות מהירה וחלקה.
       </p>
     </div>
   </div>
@@ -519,11 +513,6 @@ button{cursor:pointer}
 window.addEventListener('DOMContentLoaded', () => {
 'use strict';
 
-// -------------------------------------------------------------
-// הגדרת המייל שלך כמנהל העל הראשי (Super Admin)
-// -------------------------------------------------------------
-const SUPER_ADMIN_EMAIL = "0583211042@gmail.com";
-
 const firebaseConfig = {
   apiKey: "AIzaSyB_AerhoBm-VJPqf25kOH1S4xGdauV2EDI",
   authDomain: "group-hub-2026.firebaseapp.com",
@@ -550,8 +539,6 @@ const PEOPLE = {
   avrahamGutstein:  'אברהם גוטשטיין',
   asherPisrbavsky:  'אשר פיסרבסקי'
 };
-
-let allowedEmailsList = [SUPER_ADMIN_EMAIL];
 
 const RANDOM_MESSAGES = [
   "\"החכמה היא לא לדעת מה להגיד, אלא מתי להגיד.\" 💡",
@@ -603,6 +590,7 @@ let memberStatuses = {};
 let cloudTopics = {};
 let chatMessages = [];
 let pollsData = [];
+let onlineUsers = [];
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -612,62 +600,48 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// טעינת רשימת האימיילים המורשים מהענן
-db.collection("groupData").doc("whitelistEmails").onSnapshot(async (doc) => {
-  if (doc.exists && doc.data().emails) {
-    allowedEmailsList = doc.data().emails;
-  } else {
-    await db.collection("groupData").doc("whitelistEmails").set({ emails: allowedEmailsList });
-  }
-  renderAdminEmailsList();
-});
-
 const googleLoginBtn = document.getElementById('googleLoginBtn');
 if (googleLoginBtn) {
   googleLoginBtn.addEventListener('click', async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     try {
-      await auth.signInWithRedirect(provider);
+      await auth.signInWithPopup(provider);
     } catch (error) {
-      alert("שגיאה בהתחברות עם גוגל: " + error.message);
+      try {
+        await auth.signInWithRedirect(provider);
+      } catch (e) {
+        alert("שגיאה בהתחברות עם גוגל: " + e.message);
+      }
     }
   });
 }
 
-auth.getRedirectResult().then(async (result) => {
+auth.getRedirectResult().then((result) => {
   if (result.user) {
-    verifyAndLogin(result.user);
+    handleSuccessfulLogin(result.user);
   }
 }).catch((error) => {
   console.error(error);
 });
 
-auth.onAuthStateChanged(async (user) => {
+auth.onAuthStateChanged((user) => {
   if (user) {
-    verifyAndLogin(user);
+    handleSuccessfulLogin(user);
   } else if (currentUser) {
     startApp();
   }
 });
 
-function verifyAndLogin(user) {
-  const email = (user.email || "").toLowerCase().trim();
-  const name = user.displayName || email;
-
-  // האם זה מנהל העל או נמצא ברשימת המורשים בענן?
-  const isSuperAdmin = (email === SUPER_ADMIN_EMAIL.toLowerCase());
-  const isAllowed = isSuperAdmin || allowedEmailsList.map(e => e.toLowerCase().trim()).includes(email);
-
-  if (!isAllowed) {
-    auth.signOut();
-    alert("הגישה נדחתה: כתובת האימייל (" + email + ") אינה מורשית להיכנס למערכת הקבוצתית.");
-    return;
-  }
-
-  currentUser = name;
-  currentEmail = email;
+function handleSuccessfulLogin(user) {
+  currentUser = user.displayName || user.email || "משתמש";
+  currentEmail = user.email || "";
   localStorage.setItem('loggedUser', currentUser);
   localStorage.setItem('loggedEmail', currentEmail);
+
+  db.collection("groupData").doc("onlineTracking").set({
+    [currentEmail.replace(/[.#$[\]]/g, '_') || 'user']: { name: currentUser, email: currentEmail, lastSeen: new Date().toLocaleTimeString('he-IL') }
+  }, { merge: true }).catch(() => {});
+
   startApp();
 }
 
@@ -677,13 +651,18 @@ function startApp() {
   if (loginScreen) loginScreen.style.display = 'none';
   if (mainApp) mainApp.style.display = 'block';
 
-  // הצגת כפתור ניהול רק למנהל העל
-  if (currentEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
-    const adminNavBtn = document.getElementById('adminNavBtn');
-    const adminBottomBtn = document.getElementById('adminBottomBtn');
-    if (adminNavBtn) adminNavBtn.classList.remove('hidden');
-    if (adminBottomBtn) adminBottomBtn.classList.remove('hidden');
-  }
+  const adminNavBtn = document.getElementById('adminNavBtn');
+  const adminBottomBtn = document.getElementById('adminBottomBtn');
+  if (adminNavBtn) adminNavBtn.classList.remove('hidden');
+  if (adminBottomBtn) adminBottomBtn.classList.remove('hidden');
+
+  db.collection("groupData").doc("onlineTracking").onSnapshot((doc) => {
+    if (doc.exists) {
+      const data = doc.data();
+      onlineUsers = Object.values(data);
+      renderOnlineUsersAdmin();
+    }
+  });
 
   db.collection("groupData").doc("customTopics").onSnapshot((doc) => {
     cloudTopics = doc.data() || {};
@@ -1151,40 +1130,20 @@ if (saveAdminDutyBtn) {
   });
 }
 
-// ניהול רשימת האימיילים המורשים בענן
-function renderAdminEmailsList() {
-  const container = document.getElementById('allowedEmailsContainer');
+function renderOnlineUsersAdmin() {
+  const container = document.getElementById('activeUsersList');
   if (!container) return;
-  container.innerHTML = allowedEmailsList.map((email, index) => `
+  if (!onlineUsers.length) {
+    container.innerHTML = 'אין משתמשים רשומים כרגע.';
+    return;
+  }
+  container.innerHTML = onlineUsers.map(u => `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05)">
-      <span>${email}</span>
-      ${email.toLowerCase() !== SUPER_ADMIN_EMAIL.toLowerCase() ? `<button style="border:0;background:rgba(239,68,68,0.2);color:#f87171;border-radius:6px;padding:2px 8px;font-size:11px" onclick="removeEmail(${index})">הסר</button>` : '<span style="font-size:11px;color:var(--orange)">מנהל ראשי</span>'}
+      <span><strong>${u.name}</strong> (${u.email})</span>
+      <span class="muted" style="font-size:11px">${u.lastSeen}</span>
     </div>
   `).join('');
 }
-
-const addEmailBtn = document.getElementById('addEmailBtn');
-if (addEmailBtn) {
-  addEmailBtn.addEventListener('click', async () => {
-    const input = document.getElementById('newEmailInput');
-    const val = input ? input.value.trim().toLowerCase() : '';
-    if (!val || !val.includes('@')) { showToast("נא להזין כתובת אימייל תקינה"); return; }
-    if (!allowedEmailsList.map(e => e.toLowerCase()).includes(val)) {
-      allowedEmailsList.push(val);
-      await db.collection("groupData").doc("whitelistEmails").set({ emails: allowedEmailsList });
-      input.value = "";
-      showToast("האימייל נוסף בהצלחה למורשים!");
-    } else {
-      showToast("האימייל כבר קיים ברשימה");
-    }
-  });
-}
-
-window.removeEmail = async function(index) {
-  allowedEmailsList.splice(index, 1);
-  await db.collection("groupData").doc("whitelistEmails").set({ emails: allowedEmailsList });
-  showToast("האימייל הוסר בהצלחה!");
-};
 
 const sendAdminBroadcastBtn = document.getElementById('sendAdminBroadcastBtn');
 if (sendAdminBroadcastBtn) {
@@ -1196,7 +1155,7 @@ if (sendAdminBroadcastBtn) {
     chatMessages.push({
       id: 'msg_' + Date.now(),
       author: "🛡️ הנהלת המערכת",
-      text: "📢 הודעת מנהל: " + text,
+      text: "📢 הודעת מנהל: pop " + text,
       time: new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })
     });
     if (chatMessages.length > 50) chatMessages = chatMessages.slice(chatMessages.length - 50);
