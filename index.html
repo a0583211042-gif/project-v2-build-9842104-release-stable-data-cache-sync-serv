@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#050811">
-<title>סינכרון | מרכז הקבוצה המאובטח</title>
+<meta name="theme-color" content="#030712">
+<title>סינכרון | מרכז הקבוצה החכם</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -225,6 +225,16 @@ button{cursor:pointer}
 .poll-option{display:flex;justify-content:space-between;align-items:center;background:rgba(3,7,18,0.6);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-top:8px;cursor:pointer;transition:all 0.2s}
 .poll-option:hover{border-color:var(--cyan)}
 
+/* לוח שנה */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;text-align:center}
+.cal-day{background:rgba(255,255,255,0.02);border:1px solid var(--line);border-radius:14px;padding:12px 6px;min-height:75px;display:flex;flex-direction:column;justify-content:space-between}
+.cal-day.today{border-color:var(--cyan);background:rgba(14,165,233,0.08)}
+.cal-day strong{font-size:15px;display:block}
+.cal-day small{font-size:10px;color:var(--muted)}
+.cal-badge{font-size:9px;padding:2px 4px;border-radius:6px;margin-top:4px;font-weight:700}
+.cal-badge.meeting{background:rgba(245,158,11,0.2);color:#fde68a}
+.cal-badge.errand{background:rgba(16,185,129,0.2);color:#34d399}
+
 .modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:100;display:grid;place-items:center;padding:20px}
 .modal-box{width:min(650px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:30px;padding:28px;box-shadow:var(--shadow)}
 .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
@@ -324,30 +334,31 @@ button{cursor:pointer}
 
 <nav class="nav" id="desktopNav">
   <button data-page="home" class="active">⌂ בית</button>
-  <button data-page="schedule">▦ שבועות</button>
-  <button data-page="personal">◉ אזור אישי</button>
-  <button data-page="chat">◌ צ'אט</button>
-  <button data-page="polls">📊 סקרים</button>
-  <button data-page="settings">⚙ הגדרות</button>
+  <button data-page="schedule" id="nav-schedule">▦ שבועות</button>
+  <button data-page="calendar" id="nav-calendar">📅 לוח שנה</button>
+  <button data-page="personal" id="nav-personal">◉ אזור אישי</button>
+  <button data-page="chat" id="nav-chat">◌ צ'אט</button>
+  <button data-page="polls" id="nav-polls">📊 סקרים</button>
+  <button data-page="settings" id="nav-settings">⚙ הגדרות</button>
   <button data-page="admin" id="adminNavBtn" class="hidden" style="border-color:var(--orange);color:var(--orange)">🛡️ ניהול</button>
 </nav>
 
 <section id="page-home" class="page active">
   <div class="grid two">
-    <div class="card">
+    <div class="card" id="card-home-assignments">
       <div class="card-head"><h2 class="card-title">מה קורה עכשיו?</h2><span class="badge current" id="homeWeekBadge">שבוע —</span></div>
       <div id="homeAssignments"></div>
     </div>
-    <div class="card">
+    <div class="card" id="card-home-quick">
       <div class="card-head"><h2 class="card-title">פעולות מהירות</h2></div>
       <div class="quick-grid">
         <button class="quick" data-go="personal"><div class="qicon">🏠</div><strong>דיווח סטטוס</strong><span>עדכן הגעה</span></button>
-        <button class="quick" data-go="schedule"><div class="qicon">📅</div><strong>לוח שבועות</strong><span>מי עושה מה</span></button>
+        <button class="quick" data-go="calendar"><div class="qicon">📅</div><strong>לוח שנה</strong><span>ישיבות וסידורים</span></button>
         <button class="quick" data-go="polls"><div class="qicon">📊</div><strong>סקרים</strong><span>הצבעה קבוצתית</span></button>
       </div>
     </div>
   </div>
-  <div class="card" style="margin-top:20px">
+  <div class="card" id="card-home-statuses" style="margin-top:20px">
     <div class="card-head"><h2 class="card-title">מצב נוכחות חברי הקבוצה</h2><span class="muted" id="statusSummary">—</span></div>
     <div class="duty-list" id="homeStatuses"></div>
   </div>
@@ -380,9 +391,22 @@ button{cursor:pointer}
   </div>
 </section>
 
+<!-- עמוד לוח שנה חדש (עברי/לועזי + ימי ישיבה/סידורים) -->
+<section id="page-calendar" class="page">
+  <div class="card">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">📅 לוח שנה קבוצתי (עברי & לועזי)</h2>
+        <div class="muted" style="font-size:13px;margin-top:4px">קבע ימי ישיבות וימי סידורים לכל תאריך.</div>
+      </div>
+    </div>
+    <div id="calendarContainer"></div>
+  </div>
+</section>
+
 <section id="page-personal" class="page">
   <div class="grid two">
-    <div class="card">
+    <div class="card" id="card-personal-assignments">
       <div class="card-head">
         <div>
           <h2 class="card-title" id="personalTitle">האזור האישי שלך</h2>
@@ -391,14 +415,14 @@ button{cursor:pointer}
       </div>
       <div id="personalAssignments"></div>
     </div>
-    <div class="card">
+    <div class="card" id="card-personal-status">
       <div class="card-head"><h2 class="card-title">דיווח סטטוס נוכחות</h2><span class="badge" id="myStatusBadge">טרם דווח</span></div>
       <div class="status-row">
         <button class="status-btn" data-status="🏠 הגעתי הביתה">🏠 הגעתי הביתה</button>
         <button class="status-btn" data-status="🚌 בדרך">🚌 בדרך</button>
         <button class="status-btn" data-status="🏛️ בבסיס">🏛️ בבסיס</button>
       </div>
-      <div class="notice" style="margin-top:16px">הדיווח מתאפס אוטומטית מדי יום ומסתנכרן מול התורן בזמן אמת.</div>
+      <div class="notice" style="margin-top:16px">הדיווח מתאפס אוטומטית מדי יום בשעה 01:00 בלילה ומסתנכרן מול התורן בזמן אמת.</div>
       <div id="dutyManager" style="margin-top:20px"></div>
     </div>
   </div>
@@ -443,7 +467,7 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- פאנל ניהול מורחב ומוסתר למי שאינו מנהל -->
+<!-- פאנל ניהול מורחב ומוסתר לחלוטין למי שאינו מנהל -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
@@ -455,6 +479,19 @@ button{cursor:pointer}
       <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px" type="button">שמור תורן מעודכן בענן</button>
     </div>
     <div class="card">
+      <div class="card-head"><h2 class="card-title">👁️ ניהול תצוגה והסתרת כרטיסיות</h2></div>
+      <p class="muted" style="font-size:12px;margin-bottom:12px">סמן מה להסתיר מממשק המשתמשים:</p>
+      <div style="display:grid;gap:8px" id="visibilityToggles">
+        <label><input type="checkbox" data-hide="schedule"> הסתר את לוח השבועות</label>
+        <label><input type="checkbox" data-hide="calendar"> הסתר את לוח השנה</label>
+        <label><input type="checkbox" data-hide="chat"> הסתר את הצ'אט</label>
+        <label><input type="checkbox" data-hide="polls"> הסתר את הסקרים</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid two" style="margin-top:20px">
+    <div class="card">
       <div class="card-head"><h2 class="card-title">🔒 ניהול מורשי כניסה (Whitelist)</h2></div>
       <p class="muted" style="font-size:12px;margin-bottom:8px">הוסף אימייל שרשאי להיכנס לאתר:</p>
       <div style="margin-bottom:10px;display:flex;gap:6px">
@@ -463,9 +500,6 @@ button{cursor:pointer}
       </div>
       <div id="whitelistContainer" class="notice" style="max-height:110px;overflow:auto">טוען מורשים...</div>
     </div>
-  </div>
-
-  <div class="grid two" style="margin-top:20px">
     <div class="card">
       <div class="card-head"><h2 class="card-title">🔑 ניהול גישה לפאנל הניהול</h2></div>
       <p class="muted" style="font-size:12px;margin-bottom:8px">הוסף אימייל שרשאי להיכנס לפאנל הניהול:</p>
@@ -475,13 +509,14 @@ button{cursor:pointer}
       </div>
       <div id="adminsContainer" class="notice" style="max-height:110px;overflow:auto">טוען מנהלים...</div>
     </div>
-    <div class="card">
-      <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת רשמית</h2></div>
-      <div style="margin-bottom:12px">
-        <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
-      </div>
-      <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px" type="button">שדור הודעת מערכת לכולם</button>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת רשמית</h2></div>
+    <div style="margin-bottom:12px">
+      <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
     </div>
+    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px" type="button">שדור הודעת מערכת לכולם</button>
   </div>
 </section>
 
@@ -513,11 +548,12 @@ button{cursor:pointer}
 
 <div class="bottom-nav" id="bottomNav">
   <button data-page="home" class="active"><b>⌂</b>בית</button>
-  <button data-page="schedule"><b>▦</b>שבועות</button>
-  <button data-page="personal"><b>◉</b>אישי</button>
-  <button data-page="chat"><b>◌</b>צ'אט</button>
-  <button data-page="polls"><b>📊</b>סקרים</button>
-  <button data-page="settings"><b>⚙</b>עוד</button>
+  <button data-page="schedule" id="bnav-schedule"><b>▦</b>שבועות</button>
+  <button data-page="calendar" id="bnav-calendar"><b>📅</b>לוח</button>
+  <button data-page="personal" id="bnav-personal"><b>◉</b>אישי</button>
+  <button data-page="chat" id="bnav-chat"><b>◌</b>צ'אט</button>
+  <button data-page="polls" id="bnav-polls"><b>📊</b>סקרים</button>
+  <button data-page="settings" id="bnav-settings"><b>⚙</b>עוד</button>
   <button data-page="admin" id="adminBottomBtn" class="hidden"><b>🛡️</b>ניהול</button>
 </div>
 </main>
@@ -541,8 +577,19 @@ button{cursor:pointer}
 window.addEventListener('DOMContentLoaded', () => {
 'use strict';
 
-// הגדרת המייל שלך כמנהל-על (כולל האות 'a' המדויקת לפי צילום המסך)
 const SUPER_ADMIN_EMAIL = "a0583211042@gmail.com";
+
+// כל 8 הכתובות מהצילום שהוגדרו מראש כמורשים
+const INITIAL_EMAILS = [
+  "a0556701109@gmail.com",
+  "a0583211042@gmail.com",
+  "a0548505450@gmail.com",
+  "f8547974@gmail.com",
+  "a0555572624@gmail.com",
+  "p0548477616@gmail.com",
+  "gmail.com@8503887",
+  "sr0546172709@gmail.com"
+];
 
 const firebaseConfig = {
   apiKey: "AIzaSyB_AerhoBm-VJPqf25kOH1S4xGdauV2EDI",
@@ -571,8 +618,10 @@ const PEOPLE = {
   asherPisrbavsky:  'אשר פיסרבסקי'
 };
 
-let whitelistEmails = [SUPER_ADMIN_EMAIL, "0583211042@gmail.com"];
-let adminEmails = [SUPER_ADMIN_EMAIL, "0583211042@gmail.com"];
+let whitelistEmails = [...INITIAL_EMAILS];
+let adminEmails = [SUPER_ADMIN_EMAIL];
+let hiddenPagesConfig = {};
+let calendarNotes = {}; // מילון לניהול ימי ישיבה/סידורים לפי תאריך YYYY-MM-DD
 
 const RANDOM_MESSAGES = [
   "\"החכמה היא לא לדעת מה להגיד, אלא מתי להגיד.\" 💡",
@@ -633,20 +682,26 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// טעינה וסנכרון של רשימות האבטחה מהענן
+// טעינה וסנכרון של רשימות האבטחה, הגדרות הסתרה ולוח שנה מהענן
 db.collection("groupData").doc("securityConfig").onSnapshot(async (doc) => {
   if (doc.exists) {
     const data = doc.data();
     if (data.whitelist) whitelistEmails = data.whitelist;
     if (data.admins) adminEmails = data.admins;
+    if (data.hiddenPages) hiddenPagesConfig = data.hiddenPages;
+    if (data.calendarNotes) calendarNotes = data.calendarNotes;
   } else {
     await db.collection("groupData").doc("securityConfig").set({
       whitelist: whitelistEmails,
-      admins: adminEmails
+      admins: adminEmails,
+      hiddenPages: {},
+      calendarNotes: {}
     });
   }
   renderSecurityAdminUI();
+  applyHiddenPagesUI();
   checkAdminAccessPrivileges();
+  renderCalendar();
 });
 
 const googleLoginBtn = document.getElementById('googleLoginBtn');
@@ -685,7 +740,7 @@ function verifyUserAccess(user) {
   const email = (user.email || "").toLowerCase().trim();
   const name = user.displayName || email;
 
-  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase() || email === "0583211042@gmail.com");
+  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase());
   const isWhitelisted = isSuper || whitelistEmails.map(e => e.toLowerCase().trim()).includes(email);
 
   if (!isWhitelisted) {
@@ -703,7 +758,7 @@ function verifyUserAccess(user) {
 
 function checkAdminAccessPrivileges() {
   const email = (currentEmail || "").toLowerCase().trim();
-  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase() || email === "0583211042@gmail.com");
+  const isSuper = (email === SUPER_ADMIN_EMAIL.toLowerCase());
   const isAdmin = isSuper || adminEmails.map(e => e.toLowerCase().trim()).includes(email);
 
   const adminNavBtn = document.getElementById('adminNavBtn');
@@ -721,6 +776,63 @@ function checkAdminAccessPrivileges() {
       switchPage('home');
     }
   }
+}
+
+function applyHiddenPagesUI() {
+  // החלת הסתרת עמודים/כרטיסיות בהתאם להגדרות המנהל בענן
+  const scheduleNav = document.getElementById('nav-schedule');
+  const bScheduleNav = document.getElementById('bnav-schedule');
+  const schedulePage = document.getElementById('page-schedule');
+  if (hiddenPagesConfig.schedule) {
+    if (scheduleNav) scheduleNav.classList.add('hidden');
+    if (bScheduleNav) bScheduleNav.classList.add('hidden');
+    if (schedulePage && schedulePage.classList.contains('active')) switchPage('home');
+  } else {
+    if (scheduleNav) scheduleNav.classList.remove('hidden');
+    if (bScheduleNav) bScheduleNav.classList.remove('hidden');
+  }
+
+  const calNav = document.getElementById('nav-calendar');
+  const bCalNav = document.getElementById('bnav-calendar');
+  const calPage = document.getElementById('page-calendar');
+  if (hiddenPagesConfig.calendar) {
+    if (calNav) calNav.classList.add('hidden');
+    if (bCalNav) bCalNav.classList.add('hidden');
+    if (calPage && calPage.classList.contains('active')) switchPage('home');
+  } else {
+    if (calNav) calNav.classList.remove('hidden');
+    if (bCalNav) bCalNav.classList.remove('hidden');
+  }
+
+  const chatNav = document.getElementById('nav-chat');
+  const bChatNav = document.getElementById('bnav-chat');
+  const chatPage = document.getElementById('page-chat');
+  if (hiddenPagesConfig.chat) {
+    if (chatNav) chatNav.classList.add('hidden');
+    if (bChatNav) bChatNav.classList.add('hidden');
+    if (chatPage && chatPage.classList.contains('active')) switchPage('home');
+  } else {
+    if (chatNav) chatNav.classList.remove('hidden');
+    if (bChatNav) bChatNav.classList.remove('hidden');
+  }
+
+  const pollsNav = document.getElementById('nav-polls');
+  const bPollsNav = document.getElementById('bnav-polls');
+  const pollsPage = document.getElementById('page-polls');
+  if (hiddenPagesConfig.polls) {
+    if (pollsNav) pollsNav.classList.add('hidden');
+    if (bPollsNav) bPollsNav.classList.add('hidden');
+    if (pollsPage && pollsPage.classList.contains('active')) switchPage('home');
+  } else {
+    if (pollsNav) pollsNav.classList.remove('hidden');
+    if (bPollsNav) bPollsNav.classList.remove('hidden');
+  }
+
+  // סימון התיבות בפאנל הניהול
+  document.querySelectorAll('#visibilityToggles input').forEach(input => {
+    const key = input.dataset.hide;
+    input.checked = !!hiddenPagesConfig[key];
+  });
 }
 
 function startApp() {
@@ -746,12 +858,21 @@ function startApp() {
       const data = doc.data();
       currentDuty = data.currentDuty || "";
       
-      const todayStr = new Date().toDateString();
-      if (data.lastResetDate !== todayStr) {
+      memberStatuses = data.memberStatuses || {};
+
+      // בדיקת איפוס יומי אוטומטי בשעה 01:00 בלילה
+      const now = new Date();
+      const todayDateStr = now.toDateString();
+      const lastResetDate = data.lastResetDate || "";
+      const currentHour = now.getHours();
+
+      // אם עבר ליום חדש והשעה היא לפחות 01:00 (או שהתאריך שונה לחלוטין)
+      if (lastResetDate !== todayDateStr && currentHour >= 1) {
         memberStatuses = {};
-        db.collection("groupData").doc("metaMeta").set({ memberStatuses, lastResetDate: todayStr }, { merge: true });
-      } else {
-        memberStatuses = data.memberStatuses || {};
+        db.collection("groupData").doc("metaMeta").set({ 
+          memberStatuses: {}, 
+          lastResetDate: todayDateStr 
+        }, { merge: true });
       }
 
       const adminSel = document.getElementById('adminDutySelector');
@@ -779,6 +900,7 @@ function startApp() {
   });
 
   renderAll();
+  renderCalendar();
 }
 
 function switchPage(pageId) {
@@ -933,6 +1055,79 @@ function renderScheduleWeeks() {
     container.innerHTML = html;
   }
 }
+
+// -------------------------------------------------------------
+// רנדור לוח שנה עברי + לועזי עם בחירת יום ישיבה / סידורים
+// -------------------------------------------------------------
+function renderCalendar() {
+  const container = document.getElementById('calendarContainer');
+  if (!container) return;
+
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  
+  let gridHtml = '<div class="cal-grid">';
+  const daysNames = ['א\'', 'ב\'', 'ג\'', 'ד\'', 'ה\'', 'ו\'', 'שבת'];
+  daysNames.forEach(d => { gridHtml += `<div style="font-weight:800;color:var(--muted);font-size:12px;padding:6px 0">${d}</div>`; });
+
+  // ריווח לתחילת החודש
+  const startDayOfWeek = firstDay.getDay();
+  for (let i = 0; i < startDayOfWeek; i++) {
+    gridHtml += `<div></div>`;
+  }
+
+  const hebrewFormatter = new Intl.DateTimeFormat('he-IL-u-ca-hebrew', { day: 'numeric', month: 'short' });
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const currDate = new Date(year, month, d);
+    const dateStr = currDate.toISOString().split('T')[0];
+    const isToday = currDate.toDateString() === now.toDateString();
+    
+    // המרה לתאריך עברי
+    let hebrewDateStr = "";
+    try {
+      hebrewDateStr = hebrewFormatter.format(currDate);
+    } catch(e) { hebrewDateStr = ""; }
+
+    const noteType = calendarNotes[dateStr] || "";
+    let badgeHtml = "";
+    if (noteType === "meeting") badgeHtml = `<span class="cal-badge meeting">יום ישיבה</span>`;
+    else if (noteType === "errand") badgeHtml = `<span class="cal-badge errand">יום סידורים</span>`;
+
+    gridHtml += `
+      <div class="cal-day ${isToday ? 'today' : ''}" onclick="openCalendarDayModal('${dateStr}')">
+        <div>
+          <strong>${d}</strong>
+          <small>${hebrewDateStr}</small>
+        </div>
+        ${badgeHtml}
+      </div>
+    `;
+  }
+  gridHtml += '</div>';
+  container.innerHTML = gridHtml;
+}
+
+window.openCalendarDayModal = function(dateStr) {
+  const currentNote = calendarNotes[dateStr] || "none";
+  let choice = prompt("בחר הגדרה ליום (" + dateStr + "):\n1 - סרגל רגיל (ללא סימון)\n2 - יום ישיבה\n3 - יום סידורים\n\nהקש 1, 2 או 3:");
+  if (choice === "2") {
+    calendarNotes[dateStr] = "meeting";
+  } else if (choice === "3") {
+    calendarNotes[dateStr] = "errand";
+  } else if (choice === "1") {
+    delete calendarNotes[dateStr];
+  } else {
+    return;
+  }
+  db.collection("groupData").doc("securityConfig").set({ calendarNotes }, { merge: true });
+  showToast("לוח השנה עודכן בהצלחה!");
+  renderCalendar();
+};
 
 window.openWeekModal = function(w) {
   const d = WEEK_DATA[w];
@@ -1198,7 +1393,7 @@ if (saveAdminDutyBtn) {
 }
 
 // -------------------------------------------------------------
-// ניהול ממשק הרשאות מורשׂים ומנהלים
+// ניהול ממשק הרשאות מורשׂים, מנהלים והסתרת כרטיסיות
 // -------------------------------------------------------------
 function renderSecurityAdminUI() {
   const wContainer = document.getElementById('whitelistContainer');
@@ -1230,7 +1425,7 @@ if (addWhitelistBtn) {
     if (!val || !val.includes('@')) { showToast("נא להזין אימייל תקין"); return; }
     if (!whitelistEmails.map(e => e.toLowerCase()).includes(val)) {
       whitelistEmails.push(val);
-      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails }, { merge: true });
+      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
       input.value = "";
       showToast("האימייל נוסף למורשי הכניסה!");
     } else {
@@ -1241,7 +1436,7 @@ if (addWhitelistBtn) {
 
 window.removeWhitelistEmail = async function(idx) {
   whitelistEmails.splice(idx, 1);
-  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails }, { merge: true });
+  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
   showToast("המורשה הוסר בהצלחה!");
 };
 
@@ -1253,7 +1448,7 @@ if (addAdminBtn) {
     if (!val || !val.includes('@')) { showToast("נא להזין אימייל תקין"); return; }
     if (!adminEmails.map(e => e.toLowerCase()).includes(val)) {
       adminEmails.push(val);
-      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails }, { merge: true });
+      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
       input.value = "";
       showToast("המנהל נוסף בהצלחה!");
     } else {
@@ -1264,9 +1459,19 @@ if (addAdminBtn) {
 
 window.removeAdminEmail = async function(idx) {
   adminEmails.splice(idx, 1);
-  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails }, { merge: true });
+  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
   showToast("הרשאת הניהול הוסרה!");
 };
+
+// שמירת מצב ההסתרה של כרטיסיות בענן
+document.querySelectorAll('#visibilityToggles input').forEach(input => {
+  input.addEventListener('change', async () => {
+    const key = input.dataset.hide;
+    hiddenPagesConfig[key] = input.checked;
+    await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+    showToast("הגדרות תצוגה עודכנו!");
+  });
+});
 
 const sendAdminBroadcastBtn = document.getElementById('sendAdminBroadcastBtn');
 if (sendAdminBroadcastBtn) {
