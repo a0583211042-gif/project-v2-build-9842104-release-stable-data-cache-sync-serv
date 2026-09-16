@@ -12,25 +12,26 @@
 :root{
   --bg: #030712;
   --panel: rgba(15, 23, 42, 0.85);
-  --panel-glass: rgba(30, 41, 59, 0.7);
-  --line: rgba(56, 189, 248, 0.15);
+  --panel-glass: rgba(30, 41, 59, 0.65);
+  --line: rgba(56, 189, 248, 0.18);
   --text: #f8fafc;
   --muted: #94a3b8;
   --brand: #4f46e5;
-  --brand-glow: rgba(79, 70, 229, 0.4);
+  --brand-glow: rgba(79, 70, 229, 0.5);
   --cyan: #0ea5e9;
   --green: #10b981;
   --orange: #f59e0b;
   --red: #ef4444;
-  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  --shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.8);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{
   margin:0;
   background: 
-    radial-gradient(1000px 600px at 90% -10%, rgba(79, 70, 229, 0.2), transparent 60%),
-    radial-gradient(800px 600px at 10% 20%, rgba(14, 165, 233, 0.15), transparent 60%),
+    radial-gradient(1200px 700px at 85% -10%, rgba(79, 70, 229, 0.25), transparent 60%),
+    radial-gradient(900px 700px at 15% 15%, rgba(14, 165, 233, 0.2), transparent 60%),
+    radial-gradient(600px 400px at 50% 100%, rgba(16, 185, 129, 0.1), transparent 50%),
     var(--bg);
   color:var(--text);
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
@@ -40,30 +41,51 @@ button,input,select{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
 
-#loginScreen{min-height:100vh;display:grid;place-items:center;padding:24px}
-.login-shell{width:min(440px,100%)}
+/* מסך כניסה מעוצב מחדש ברמת פרימיום עלית */
+#loginScreen{
+  min-height:100vh;display:grid;place-items:center;padding:24px;
+  position:relative;overflow:hidden;
+}
+#loginScreen::before{
+  content:'';position:absolute;width:450px;height:450px;background:var(--brand);
+  filter:blur(140px);opacity:0.18;border-radius:50%;z-index:0;animation:pulseGlow 8s ease-in-out infinite alternate;
+}
+@keyframes pulseGlow{0%{transform:scale(1)} 100%{transform:scale(1.15)}}
+
+.login-shell{width:min(440px,100%);position:relative;z-index:1}
 .brand-mark{
-  width:80px;height:80px;border-radius:26px;
+  width:88px;height:88px;border-radius:28px;
   background:linear-gradient(135deg, var(--brand), var(--cyan));
-  display:grid;place-items:center;font-size:38px;
-  box-shadow: 0 20px 40px var(--brand-glow);
-  margin:0 auto 24px;
+  display:grid;place-items:center;font-size:40px;
+  box-shadow: 0 20px 45px var(--brand-glow), inset 0 2px 4px rgba(255,255,255,0.3);
+  margin:0 auto 26px;border:1px solid rgba(255,255,255,0.2);
 }
 .login-card{
-  background: var(--panel);backdrop-filter: blur(24px);
-  border: 1px solid var(--line);border-radius: 32px;
-  padding: 40px;box-shadow: var(--shadow);text-align: center;
+  background: var(--panel);backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--line);border-radius: 36px;
+  padding: 44px 36px;box-shadow: var(--shadow);text-align: center;
+  position:relative;overflow:hidden;
 }
-.login-card h1{margin:0 0 8px;font-size:34px;font-weight:900;letter-spacing:-0.5px}
-.login-card .sub{color:var(--muted);margin:0 0 32px;font-size:14px}
+.login-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+}
+.login-card h1{margin:0 0 8px;font-size:36px;font-weight:900;letter-spacing:-0.5px;color:#fff}
+.login-card .sub{color:var(--muted);margin:0 0 34px;font-size:14px;font-weight:500}
+
 .google-login-btn{
-  width:100%;border:0;border-radius:18px;height:58px;
+  width:100%;border:0;border-radius:20px;height:60px;
   background:#ffffff;color:#111827;font-weight:800;font-size:16px;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);transition: all 0.25s ease;
+  display:flex;align-items:center;justify-content:center;gap:14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4);transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position:relative;overflow:hidden;
 }
-.google-login-btn:hover{background:#f1f5f9;transform: translateY(-2px);box-shadow: 0 15px 30px rgba(0,0,0,0.4)}
-.login-note{font-size:12px;color:var(--muted);margin-top:24px;line-height:1.6}
+.google-login-btn:hover{
+  background:#f8fafc;transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(14,165,233,0.25);
+}
+.login-note{font-size:12px;color:var(--muted);margin-top:28px;line-height:1.6}
 
 #mainApp{display:none;min-height:100vh}
 .shell{width:min(1240px,100%);margin:auto;padding:24px 20px 110px}
@@ -203,7 +225,7 @@ button{cursor:pointer}
 .status-chip.done{background:rgba(16,185,129,0.2);color:#34d399}
 .status-chip.route{background:rgba(245,158,11,0.2);color:#fde68a}
 
-/* צ'אט */
+/* צ'אט והבוט */
 .chat{height:580px;display:flex;flex-direction:column}
 .chat-list{flex:1;overflow:auto;padding:8px 4px 16px;display:flex;flex-direction:column;gap:12px}
 .msg{max-width:82%;padding:14px 16px;border:1px solid var(--line);background:rgba(255,255,255,0.03);border-radius:20px 20px 6px 20px;align-self:flex-start}
@@ -308,7 +330,7 @@ button{cursor:pointer}
   </div>
   <div class="connection"><span class="dot" id="connectionDot"></span><span id="connectionText">מחובר לענן</span></div>
   <div class="top-actions">
-    <button class="ghost" id="notifBtn">🔔 התראות</button>
+    <button class="ghost" id="notifBtn">🔔 התראות ורטט</button>
     <button class="icon-btn logout" id="logoutBtn">יציאה</button>
   </div>
 </header>
@@ -339,6 +361,7 @@ button{cursor:pointer}
   <button data-page="calendar" id="nav-calendar">📅 לוח שנה</button>
   <button data-page="personal" id="nav-personal">◉ אזור אישי</button>
   <button data-page="chat" id="nav-chat">◌ צ'אט</button>
+  <button data-page="ai" id="nav-ai">🤖 עוזר חכם</button>
   <button data-page="polls" id="nav-polls">📊 סקרים</button>
   <button data-page="settings" id="nav-settings">⚙ הגדרות</button>
   <button data-page="admin" id="adminNavBtn" class="hidden" style="border-color:var(--orange);color:var(--orange)">🛡️ ניהול</button>
@@ -350,13 +373,9 @@ button{cursor:pointer}
       <div class="card-head"><h2 class="card-title">מה קורה עכשיו?</h2><span class="badge current" id="homeWeekBadge">שבוע —</span></div>
       <div id="homeAssignments"></div>
     </div>
-    <div class="card" id="card-home-quick">
-      <div class="card-head"><h2 class="card-title">פעולות מהירות</h2></div>
-      <div class="quick-grid">
-        <button class="quick" data-go="personal"><div class="qicon">🏠</div><strong>דיווח סטטוס</strong><span>עדכן הגעה</span></button>
-        <button class="quick" data-go="calendar"><div class="qicon">📅</div><strong>לוח שנה</strong><span>ישיבות וסידורים</span></button>
-        <button class="quick" data-go="polls"><div class="qicon">📊</div><strong>סקרים</strong><span>הצבעה קבוצתית</span></button>
-      </div>
+    <div class="card" id="card-home-dynamic-duties">
+      <div class="card-head"><h2 class="card-title">🍽️ תורנויות להיום</h2><span class="badge" id="todayDateBadge">—</span></div>
+      <div id="homeDynamicDuties"><div class="empty">אין תורנויות שוטפות להיום</div></div>
     </div>
   </div>
   <div class="card" id="card-home-statuses" style="margin-top:20px">
@@ -392,7 +411,6 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- לוח שנה עברי / לועזי -->
 <section id="page-calendar" class="page">
   <div class="card">
     <div class="card-head">
@@ -447,6 +465,27 @@ button{cursor:pointer}
   </div>
 </section>
 
+<section id="page-ai" class="page">
+  <div class="card chat">
+    <div class="card-head">
+      <div>
+        <h2 class="card-title">🤖 עוזר חכם לצוות</h2>
+        <div class="muted" style="font-size:13px">שאל שאלות על לוח השבועות, התורנויות או משימות הצוות.</div>
+      </div>
+    </div>
+    <div id="aiChatList" class="chat-list">
+      <div class="msg">
+        <div class="meta"><span class="author">🤖 עוזר חכם</span><span>עכשיו</span></div>
+        <div class="body">שלום! אני העוזר החכם של צוות 121. שאל אותי למשל: "מי לוקח אוכל היום?", "מי התורן?", או "מה משימת הסב"ש השבוע?".</div>
+      </div>
+    </div>
+    <div class="chat-compose">
+      <input id="aiInput" type="text" placeholder="שאל את העוזר החכם שאלה...">
+      <button class="send" id="aiSend">שאל</button>
+    </div>
+  </div>
+</section>
+
 <section id="page-polls" class="page">
   <div class="grid two">
     <div class="card">
@@ -456,29 +495,41 @@ button{cursor:pointer}
     <div class="card">
       <div class="card-head"><h2 class="card-title">➕ יצירת סקר חדש</h2></div>
       <div style="margin-bottom:12px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:4px">שאלה הסקר</label>
+        <label class="muted" style="font-size:13px;display:block;margin-bottom:4px">שאלת הסקר</label>
         <input id="pollQuestionInput" class="search" style="width:100%" placeholder="לדוגמה: באיזו שעה יוצאים השבוע?">
       </div>
       <div style="margin-bottom:12px">
         <label class="muted" style="font-size:13px;display:block;margin-bottom:4px">אפשרויות (מופרדות בפסיק)</label>
         <input id="pollOptionsInput" class="search" style="width:100%" placeholder="אפשרות 1, אפשרות 2, אפשרות 3">
       </div>
-      <button class="google-login-btn" id="createPollBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px" type="button">פרסם סקר לקבוצה</button>
+      <button class="google-login-btn" id="createPollBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px;box-shadow:none" type="button">פרסם סקר לקבוצה</button>
     </div>
   </div>
 </section>
 
-<!-- פאנל ניהול מורחב ומוסתר למי שאינו מנהל -->
+<!-- פאנל ניהול סגור ומוסתר לחלוטין למי שאינו מנהל -->
 <section id="page-admin" class="page">
   <div class="grid two">
     <div class="card">
-      <div class="card-head"><h2 class="card-title">🛡️ ניהול תורנות</h2></div>
+      <div class="card-head"><h2 class="card-title">🛡️ ניהול תורנויות שבועיות וראשיות</h2></div>
       <div style="margin-bottom:16px">
         <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">בחר חניך תורן ראשי</label>
         <select id="adminDutySelector" class="select" style="width:100%"><option value="">בחר חניך תורן...</option></select>
       </div>
-      <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px" type="button">שמור תורן מעודכן בענן</button>
+      <button class="google-login-btn" id="saveAdminDutyBtn" style="background:var(--brand);color:#fff;height:48px;font-size:14px;margin-bottom:20px;box-shadow:none" type="button">שמור תורן מעודכן בענן</button>
+      
+      <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+
+      <h3 style="font-size:16px;margin-bottom:10px">➕ הוספת תורנות דינמית להיום (למשל: אוכל)</h3>
+      <div style="margin-bottom:10px">
+        <input id="newDynamicTaskInput" class="search" style="width:100%" placeholder="שם המשימה (למשל: לקיחת אוכל)">
+      </div>
+      <div style="margin-bottom:10px">
+        <select id="newDynamicPersonSelect" class="select" style="width:100%"><option value="">בחר חבר צוות...</option></select>
+      </div>
+      <button class="google-login-btn" id="addDynamicTaskBtn" style="background:var(--green);color:#fff;height:46px;font-size:14px;box-shadow:none" type="button">הוסף תורנות ליומן</button>
     </div>
+
     <div class="card">
       <div class="card-head"><h2 class="card-title">👁️ ניהול תצוגה והסתרת כרטיסיות</h2></div>
       <p class="muted" style="font-size:12px;margin-bottom:12px">סמן מה להסתיר מממשק המשתמשים:</p>
@@ -486,6 +537,7 @@ button{cursor:pointer}
         <label><input type="checkbox" data-hide="schedule"> הסתר את לוח השבועות</label>
         <label><input type="checkbox" data-hide="calendar"> הסתר את לוח השנה</label>
         <label><input type="checkbox" data-hide="chat"> הסתר את הצ'אט</label>
+        <label><input type="checkbox" data-hide="ai"> הסתר את העוזר החכם</label>
         <label><input type="checkbox" data-hide="polls"> הסתר את הסקרים</label>
       </div>
     </div>
@@ -497,7 +549,7 @@ button{cursor:pointer}
       <p class="muted" style="font-size:12px;margin-bottom:8px">הוסף אימייל שרשאי להיכנס לאתר:</p>
       <div style="margin-bottom:10px;display:flex;gap:6px">
         <input id="newWhitelistInput" class="search" placeholder="user@gmail.com">
-        <button class="google-login-btn" id="addWhitelistBtn" style="background:var(--green);color:#fff;width:90px;height:48px;font-size:13px" type="button">הוסף</button>
+        <button class="google-login-btn" id="addWhitelistBtn" style="background:var(--green);color:#fff;width:90px;height:48px;font-size:13px;box-shadow:none" type="button">הוסף</button>
       </div>
       <div id="whitelistContainer" class="notice" style="max-height:110px;overflow:auto">טוען מורשים...</div>
     </div>
@@ -506,31 +558,31 @@ button{cursor:pointer}
       <p class="muted" style="font-size:12px;margin-bottom:8px">הוסף אימייל שרשאי להיכנס לפאנל הניהול:</p>
       <div style="margin-bottom:10px;display:flex;gap:6px">
         <input id="newAdminInput" class="search" placeholder="admin@gmail.com">
-        <button class="google-login-btn" id="addAdminBtn" style="background:var(--brand);color:#fff;width:90px;height:48px;font-size:13px" type="button">הוסף מנהל</button>
+        <button class="google-login-btn" id="addAdminBtn" style="background:var(--brand);color:#fff;width:90px;height:48px;font-size:13px;box-shadow:none" type="button">הוסף מנהל</button>
       </div>
       <div id="adminsContainer" class="notice" style="max-height:110px;overflow:auto">טוען מנהלים...</div>
     </div>
   </div>
 
   <div class="card" style="margin-top:20px">
-    <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת רשמית</h2></div>
+    <div class="card-head"><h2 class="card-title">📢 שליחת הודעת מערכת והתרעת רטט לכולם</h2></div>
     <div style="margin-bottom:12px">
       <input id="adminBroadcastInput" class="search" style="width:100%" placeholder="הקלד הודעת מערכת רשמית...">
     </div>
-    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px" type="button">שדור הודעת מערכת לכולם</button>
+    <button class="google-login-btn" id="sendAdminBroadcastBtn" style="background:linear-gradient(135deg,var(--orange),var(--red));color:#fff;height:48px;font-size:14px;box-shadow:none" type="button">שדור הודעת פוש ורטט לכולם</button>
   </div>
 </section>
 
 <section id="page-settings" class="page">
   <div class="grid two">
     <div class="card">
-      <div class="card-head"><h2 class="card-title">הגדרות מתקדם והתראות</h2></div>
+      <div class="card-head"><h2 class="card-title">הגדרות מתקדם והתרעות</h2></div>
       <div class="notice good" style="margin-bottom:16px">מחובר כעת באמצעות חשבון Google: <strong id="settingsUser">—</strong></div>
       <div style="margin-top:16px">
-        <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">סינון התראות בדפדפן</label>
+        <label class="muted" style="font-size:13px;display:block;margin-bottom:6px">סינון התראות בדפדפן ורטט</label>
         <select id="notifPref" class="select" style="width:100%">
-          <option value="all">קבל התראה מכל הודעה חדשה</option>
-          <option value="duty">חניך תורן בלבד (שקט מכל השאר)</option>
+          <option value="all">קבל התראה ורטט מכל הודעה חדשה</option>
+          <option value="duty">חניך תורן ומערכת בלבד (שקט מכל השאר)</option>
         </select>
       </div>
     </div>
@@ -553,6 +605,7 @@ button{cursor:pointer}
   <button data-page="calendar" id="bnav-calendar"><b>📅</b>לוח</button>
   <button data-page="personal" id="bnav-personal"><b>◉</b>אישי</button>
   <button data-page="chat" id="bnav-chat"><b>◌</b>צ'אט</button>
+  <button data-page="ai" id="bnav-ai"><b>🤖</b>עוזר</button>
   <button data-page="polls" id="bnav-polls"><b>📊</b>סקרים</button>
   <button data-page="settings" id="bnav-settings"><b>⚙</b>עוד</button>
   <button data-page="admin" id="adminBottomBtn" class="hidden"><b>🛡️</b>ניהול</button>
@@ -580,7 +633,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 const SUPER_ADMIN_EMAIL = "a0583211042@gmail.com";
 
-// כל 8 הכתובות מהצילום שהוגדרו מראש כמורשים
 const INITIAL_EMAILS = [
   "a0556701109@gmail.com",
   "a0583211042@gmail.com",
@@ -623,6 +675,7 @@ let whitelistEmails = [...INITIAL_EMAILS];
 let adminEmails = [SUPER_ADMIN_EMAIL, "0583211042@gmail.com"];
 let hiddenPagesConfig = {};
 let calendarNotes = {};
+let dynamicDuties = {};
 
 const RANDOM_MESSAGES = [
   "\"החכמה היא לא לדעת מה להגיד, אלא מתי להגיד.\" 💡",
@@ -683,7 +736,15 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// טעינה וסנכרון של רשימות האבטחה מהענן
+function triggerVibrationAndAlert(title, body) {
+  if ("vibrate" in navigator) {
+    try { navigator.vibrate([300, 150, 300, 150, 400]); } catch(e) {}
+  }
+  if (Notification.permission === "granted") {
+    new Notification(title, { body });
+  }
+}
+
 db.collection("groupData").doc("securityConfig").onSnapshot(async (doc) => {
   if (doc.exists) {
     const data = doc.data();
@@ -691,18 +752,21 @@ db.collection("groupData").doc("securityConfig").onSnapshot(async (doc) => {
     if (data.admins && data.admins.length > 0) adminEmails = data.admins;
     if (data.hiddenPages) hiddenPagesConfig = data.hiddenPages;
     if (data.calendarNotes) calendarNotes = data.calendarNotes;
+    if (data.dynamicDuties) dynamicDuties = data.dynamicDuties;
   } else {
     await db.collection("groupData").doc("securityConfig").set({
       whitelist: whitelistEmails,
       admins: adminEmails,
       hiddenPages: {},
-      calendarNotes: {}
+      calendarNotes: {},
+      dynamicDuties: {}
     });
   }
   renderSecurityAdminUI();
   applyHiddenPagesUI();
   checkAdminAccessPrivileges();
   renderCalendar();
+  renderTodayDynamicDuties();
 });
 
 const googleLoginBtn = document.getElementById('googleLoginBtn');
@@ -722,19 +786,12 @@ if (googleLoginBtn) {
 }
 
 auth.getRedirectResult().then((result) => {
-  if (result.user) {
-    verifyUserAccess(result.user);
-  }
-}).catch((error) => {
-  console.error(error);
-});
+  if (result.user) verifyUserAccess(result.user);
+}).catch((error) => { console.error(error); });
 
 auth.onAuthStateChanged((user) => {
-  if (user) {
-    verifyUserAccess(user);
-  } else if (currentUser && currentEmail) {
-    startApp();
-  }
+  if (user) verifyUserAccess(user);
+  else if (currentUser && currentEmail) startApp();
 });
 
 function verifyUserAccess(user) {
@@ -771,62 +828,33 @@ function checkAdminAccessPrivileges() {
   } else {
     if (adminNavBtn) adminNavBtn.classList.add('hidden');
     if (adminBottomBtn) adminBottomBtn.classList.add('hidden');
-    
     const adminPage = document.getElementById('page-admin');
-    if (adminPage && adminPage.classList.contains('active')) {
-      switchPage('home');
-    }
+    if (adminPage && adminPage.classList.contains('active')) switchPage('home');
   }
 }
 
 function applyHiddenPagesUI() {
-  const scheduleNav = document.getElementById('nav-schedule');
-  const bScheduleNav = document.getElementById('bnav-schedule');
-  const schedulePage = document.getElementById('page-schedule');
-  if (hiddenPagesConfig.schedule) {
-    if (scheduleNav) scheduleNav.classList.add('hidden');
-    if (bScheduleNav) bScheduleNav.classList.add('hidden');
-    if (schedulePage && schedulePage.classList.contains('active')) switchPage('home');
-  } else {
-    if (scheduleNav) scheduleNav.classList.remove('hidden');
-    if (bScheduleNav) bScheduleNav.classList.remove('hidden');
-  }
+  const hideMap = [
+    { key: 'schedule', nav: 'nav-schedule', bnav: 'bnav-schedule' },
+    { key: 'calendar', nav: 'nav-calendar', bnav: 'bnav-calendar' },
+    { key: 'chat', nav: 'nav-chat', bnav: 'bnav-chat' },
+    { key: 'ai', nav: 'nav-ai', bnav: 'bnav-ai' },
+    { key: 'polls', nav: 'nav-polls', bnav: 'bnav-polls' }
+  ];
 
-  const calNav = document.getElementById('nav-calendar');
-  const bCalNav = document.getElementById('bnav-calendar');
-  const calPage = document.getElementById('page-calendar');
-  if (hiddenPagesConfig.calendar) {
-    if (calNav) calNav.classList.add('hidden');
-    if (bCalNav) bCalNav.classList.add('hidden');
-    if (calPage && calPage.classList.contains('active')) switchPage('home');
-  } else {
-    if (calNav) calNav.classList.remove('hidden');
-    if (bCalNav) bCalNav.classList.remove('hidden');
-  }
-
-  const chatNav = document.getElementById('nav-chat');
-  const bChatNav = document.getElementById('bnav-chat');
-  const chatPage = document.getElementById('page-chat');
-  if (hiddenPagesConfig.chat) {
-    if (chatNav) chatNav.classList.add('hidden');
-    if (bChatNav) bChatNav.classList.add('hidden');
-    if (chatPage && chatPage.classList.contains('active')) switchPage('home');
-  } else {
-    if (chatNav) chatNav.classList.remove('hidden');
-    if (bChatNav) bChatNav.classList.remove('hidden');
-  }
-
-  const pollsNav = document.getElementById('nav-polls');
-  const bPollsNav = document.getElementById('bnav-polls');
-  const pollsPage = document.getElementById('page-polls');
-  if (hiddenPagesConfig.polls) {
-    if (pollsNav) pollsNav.classList.add('hidden');
-    if (bPollsNav) bPollsNav.classList.add('hidden');
-    if (pollsPage && pollsPage.classList.contains('active')) switchPage('home');
-  } else {
-    if (pollsNav) pollsNav.classList.remove('hidden');
-    if (bPollsNav) bPollsNav.classList.remove('hidden');
-  }
+  hideMap.forEach(item => {
+    const n = document.getElementById(item.nav);
+    const bn = document.getElementById(item.bnav);
+    const p = document.getElementById('page-' + item.key);
+    if (hiddenPagesConfig[item.key]) {
+      if (n) n.classList.add('hidden');
+      if (bn) bn.classList.add('hidden');
+      if (p && p.classList.contains('active')) switchPage('home');
+    } else {
+      if (n) n.classList.remove('hidden');
+      if (bn) bn.classList.remove('hidden');
+    }
+  });
 
   document.querySelectorAll('#visibilityToggles input').forEach(input => {
     const key = input.dataset.hide;
@@ -884,11 +912,11 @@ function startApp() {
 
     if (chatMessages.length > lastMsgCount && lastMsgCount > 0) {
       const lastMsg = chatMessages[chatMessages.length - 1];
-      if (lastMsg.author !== currentUser && Notification.permission === "granted") {
+      if (lastMsg.author !== currentUser) {
         const pref = localStorage.getItem('notifPref') || 'all';
-        const isFromDuty = lastMsg.author.includes("תורן");
+        const isFromDuty = lastMsg.author.includes("תורן") || lastMsg.author.includes("מנהל");
         if (pref === 'all' || (pref === 'duty' && isFromDuty)) {
-          new Notification("הודעה חדשה (" + lastMsg.author + ")", { body: lastMsg.text || "[קובץ מדיה]" });
+          triggerVibrationAndAlert("הודעה חדשה (" + lastMsg.author + ")", lastMsg.text || "[קובץ מדיה]");
         }
       }
     }
@@ -897,6 +925,7 @@ function startApp() {
 
   renderAll();
   renderCalendar();
+  renderTodayDynamicDuties();
 }
 
 function switchPage(pageId) {
@@ -967,6 +996,7 @@ function renderAll() {
   renderScheduleWeeks();
   renderPersonal();
   renderHomeStatuses();
+  renderTodayDynamicDuties();
 }
 
 function renderHome() {
@@ -995,6 +1025,28 @@ function renderHomeStatuses() {
   let reportedCount = Object.keys(memberStatuses).length;
   const statusSummary = document.getElementById('statusSummary');
   if (statusSummary) statusSummary.textContent = reportedCount + ' מתוך ' + peopleArr.length + ' דיווחו היום';
+}
+
+function renderTodayDynamicDuties() {
+  const container = document.getElementById('homeDynamicDuties');
+  const dateBadge = document.getElementById('todayDateBadge');
+  if (!container) return;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  if (dateBadge) dateBadge.textContent = todayStr;
+
+  const todaysTasks = dynamicDuties[todayStr] || [];
+  if (!todaysTasks.length) {
+    container.innerHTML = '<div class="empty" style="padding:15px">אין תורנויות שוטפות מוגדרות להיום.</div>';
+    return;
+  }
+
+  container.innerHTML = todaysTasks.map((t, idx) => `
+    <div class="duty-item">
+      <div><strong>${t.taskName}</strong></div>
+      <span class="status-chip done">👤 ${t.personName}</span>
+    </div>
+  `).join('');
 }
 
 let scheduleViewMode = 'weeks';
@@ -1080,9 +1132,7 @@ function renderCalendar() {
     const isToday = currDate.toDateString() === now.toDateString();
     
     let hebrewDateStr = "";
-    try {
-      hebrewDateStr = hebrewFormatter.format(currDate);
-    } catch(e) { hebrewDateStr = ""; }
+    try { hebrewDateStr = hebrewFormatter.format(currDate); } catch(e) {}
 
     const noteType = calendarNotes[dateStr] || "";
     let badgeHtml = "";
@@ -1105,16 +1155,12 @@ function renderCalendar() {
 
 window.openCalendarDayModal = function(dateStr) {
   let choice = prompt("בחר הגדרה ליום (" + dateStr + "):\n1 - איפוס / ללא סימון\n2 - יום ישיבה\n3 - יום סידורים\n\nהקש 1, 2 או 3:");
-  if (choice === "2") {
-    calendarNotes[dateStr] = "meeting";
-  } else if (choice === "3") {
-    calendarNotes[dateStr] = "errand";
-  } else if (choice === "1") {
-    delete calendarNotes[dateStr];
-  } else {
-    return;
-  }
-  db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+  if (choice === "2") calendarNotes[dateStr] = "meeting";
+  else if (choice === "3") calendarNotes[dateStr] = "errand";
+  else if (choice === "1") delete calendarNotes[dateStr];
+  else return;
+
+  db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
   showToast("לוח השנה עודכן בהצלחה!");
   renderCalendar();
 };
@@ -1167,7 +1213,7 @@ function renderPersonal() {
   if (dm) {
     if (currentDuty && currentUser === currentDuty) {
       let rows = Object.values(PEOPLE).map(n => `<div class="duty-item"><span>${n}</span><span class="status-chip">${memberStatuses[n]?.text || 'טרם דיווח היום'}</span></div>`).join('');
-      dm.innerHTML = `<div class="duty-panel"><h3>⭐ תפריט חניך תורן</h3><button class="google-login-btn" style="background:var(--orange);color:#fff;height:44px;font-size:14px;margin-bottom:12px" onclick="sendDutyBroadcast()">📢 שלח תזכורת דיווח לכולם</button><div class="duty-list">${rows}</div></div>`;
+      dm.innerHTML = `<div class="duty-panel"><h3>⭐ תפריט חניך תורן</h3><button class="google-login-btn" style="background:var(--orange);color:#fff;height:44px;font-size:14px;margin-bottom:12px;box-shadow:none" onclick="sendDutyBroadcast()">📢 שלח תזכורת רטט לכולם</button><div class="duty-list">${rows}</div></div>`;
     } else {
       dm.innerHTML = '';
     }
@@ -1198,8 +1244,47 @@ window.sendDutyBroadcast = async function() {
   });
   if (chatMessages.length > 50) chatMessages = chatMessages.slice(chatMessages.length - 50);
   await db.collection("groupData").doc("chatRoom").set({ messages: chatMessages });
-  showToast("התראה נשלחה לצ'אט!");
+  showToast("התראה ורטט נשלחו לכולם!");
 };
+
+const aiSend = document.getElementById('aiSend');
+const aiInput = document.getElementById('aiInput');
+if (aiSend && aiInput) {
+  aiSend.addEventListener('click', sendAiMsg);
+  aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAiMsg(); });
+}
+
+function sendAiMsg() {
+  const q = aiInput.value.trim();
+  if (!q) return;
+
+  const box = document.getElementById('aiChatList');
+  box.innerHTML += `<div class="msg me"><div class="meta"><span class="author">${currentUser}</span><span>עכשיו</span></div><div class="body">${q}</div></div>`;
+  aiInput.value = "";
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(() => {
+    let reply = "בשמחה! אני בדיוק כאן כדי לעזור לך לעשות סדר בצוות.";
+    const qLower = q.toLowerCase();
+
+    if (qLower.includes("אוכל") || qLower.includes("מי לוקח")) {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const tasks = dynamicDuties[todayStr] || [];
+      if (tasks.length > 0) {
+        reply = "התורנויות להיום הן:\n" + tasks.map(t => `- ${t.taskName}: ${t.personName}`).join('\n');
+      } else {
+        reply = "אין תורנויות אוכל או משימות שוטפות מוגדרות להיום במערכת.";
+      }
+    } else if (qLower.includes("תורן")) {
+      reply = currentDuty ? "חניך התורן הפעיל כעת הוא: " + currentDuty + " ⭐" : "טרם נבחר חניך תורן במערכת.";
+    } else if (qLower.includes("שבוע")) {
+      reply = "אנחנו נמצאים כעת בשבוע " + CUR_WEEK + " מתוך 30 שבועות פעילות.";
+    }
+
+    box.innerHTML += `<div class="msg"><div class="meta"><span class="author">🤖 עוזר חכם</span><span>עכשיו</span></div><div class="body">${reply}</div></div>`;
+    box.scrollTop = box.scrollHeight;
+  }, 600);
+}
 
 const createPollBtn = document.getElementById('createPollBtn');
 if (createPollBtn) {
@@ -1209,76 +1294,50 @@ if (createPollBtn) {
     const question = qInput ? qInput.value.trim() : '';
     const optsStr = oInput ? oInput.value.trim() : '';
 
-    if (!question || !optsStr) {
-      showToast("נא למלא שאלה ואפשרויות לסקר");
-      return;
-    }
+    if (!question || !optsStr) { showToast("נא למלא שאלה ואפשרויות לסקר"); return; }
 
     const options = optsStr.split(',').map(o => o.trim()).filter(Boolean);
-    if (options.length < 2) {
-      showToast("יש להזין לפחות 2 אפשרויות מופרדות בפסיק");
-      return;
-    }
+    if (options.length < 2) { showToast("יש להזין לפחות 2 אפשרויות"); return; }
 
-    const newPoll = {
+    pollsData.push({
       id: 'poll_' + Date.now(),
       question,
       options: options.map(opt => ({ text: opt, votes: [] })),
       author: currentUser
-    };
+    });
 
-    pollsData.push(newPoll);
     await db.collection("groupData").doc("pollsDoc").set({ polls: pollsData });
-    qInput.value = "";
-    oInput.value = "";
-    showToast("הסקר נוצר ופורסם בהצלחה!");
+    qInput.value = ""; oInput.value = "";
+    showToast("הסקר נוצר בהצלחה!");
   });
 }
 
 window.votePoll = async function(pollId, optionIndex) {
   pollsData = pollsData.map(poll => {
     if (poll.id === pollId) {
-      poll.options.forEach(opt => {
-        opt.votes = opt.votes.filter(v => v !== currentUser);
-      });
+      poll.options.forEach(opt => opt.votes = opt.votes.filter(v => v !== currentUser));
       poll.options[optionIndex].votes.push(currentUser);
     }
     return poll;
   });
   await db.collection("groupData").doc("pollsDoc").set({ polls: pollsData });
-  showToast("ההצבעה נקלטה בהצלחה!");
+  showToast("ההצבעה נקלטה!");
 };
 
 function renderPolls() {
   const container = document.getElementById('pollsList');
   if (!container) return;
-  if (!pollsData.length) {
-    container.innerHTML = '<div class="empty">אין סקרים פעילים כרגע. תוכל ליצור סקר חדש משמאל!</div>';
-    return;
-  }
+  if (!pollsData.length) { container.innerHTML = '<div class="empty">אין סקרים פעילים כרגע.</div>'; return; }
   container.innerHTML = pollsData.map(poll => {
     let totalVotes = 0;
     poll.options.forEach(o => totalVotes += o.votes.length);
-
     let optsHtml = poll.options.map((opt, idx) => {
       const hasVoted = opt.votes.includes(currentUser);
       const count = opt.votes.length;
       const pct = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
-      return `
-        <div class="poll-option" onclick="votePoll('${poll.id}', ${idx})" style="border-color: ${hasVoted ? 'var(--green)' : 'var(--line)'}">
-          <span>${opt.text} ${hasVoted ? ' ✓' : ''}</span>
-          <span class="muted">${count} קולות (${pct}%)</span>
-        </div>
-      `;
+      return `<div class="poll-option" onclick="votePoll('${poll.id}', ${idx})" style="border-color: ${hasVoted ? 'var(--green)' : 'var(--line)'}"><span>${opt.text} ${hasVoted ? ' ✓' : ''}</span><span class="muted">${count} (${pct}%)</span></div>`;
     }).join('');
-
-    return `
-      <div class="poll-card">
-        <h3 style="margin:0 0 8px;font-size:16px">${poll.question}</h3>
-        <div class="muted" style="font-size:11px;margin-bottom:10px">נוצר ע"י: ${poll.author} | סה"כ מצביעים: ${totalVotes}</div>
-        ${optsHtml}
-      </div>
-    `;
+    return `<div class="poll-card"><h3 style="margin:0 0 8px;font-size:16px">${poll.question}</h3><div class="muted" style="font-size:11px;margin-bottom:10px">נוצר ע"י: ${poll.author}</div>${optsHtml}</div>`;
   }).join('');
 }
 
@@ -1297,9 +1356,7 @@ async function sendChatMsg() {
 
   if (file) {
     const reader = new FileReader();
-    reader.onload = async (e) => {
-      await pushMsgToCloud(text, e.target.result, file.type.startsWith('video') ? 'video' : 'image');
-    };
+    reader.onload = async (e) => { await pushMsgToCloud(text, e.target.result, file.type.startsWith('video') ? 'video' : 'image'); };
     reader.readAsDataURL(file);
   } else {
     await pushMsgToCloud(text, null, null);
@@ -1331,16 +1388,11 @@ function renderChatMessages() {
   if (!box) return;
   const chatCount = document.getElementById('chatCount');
   if (chatCount) chatCount.textContent = chatMessages.length + ' הודעות';
-  if (!chatMessages.length) {
-    box.innerHTML = '<div class="empty">אין הודעות בקבוצה עדיין. היה הראשונים לכתוב!</div>';
-    return;
-  }
+  if (!chatMessages.length) { box.innerHTML = '<div class="empty">אין הודעות בקבוצה עדיין.</div>'; return; }
   box.innerHTML = chatMessages.map(m => {
     const isMe = m.author.includes(currentUser);
     let media = '';
-    if (m.mediaUrl) {
-      media = m.mediaType === 'video' ? `<video controls src="${m.mediaUrl}"></video>` : `<img src="${m.mediaUrl}">`;
-    }
+    if (m.mediaUrl) { media = m.mediaType === 'video' ? `<video controls src="${m.mediaUrl}"></video>` : `<img src="${m.mediaUrl}">`; }
     let del = (isMe || m.author === currentUser) ? `<div class="msg-actions"><button class="delete" onclick="deleteMsg('${m.id}')">מחק</button></div>` : '';
     return `<div class="msg ${isMe?'me':''}"><div class="meta"><span class="author">${m.author}</span><span>${m.time}</span></div><div class="body">${m.text||''}</div>${media}${del}</div>`;
   }).join('');
@@ -1350,7 +1402,10 @@ function renderChatMessages() {
 const notifBtn = document.getElementById('notifBtn');
 if (notifBtn) {
   notifBtn.addEventListener('click', () => {
-    Notification.requestPermission().then(p => showToast(p === 'granted' ? "ההתראות הופעלו בהצלחה!" : "ההתראות נדחו בדפדפן."));
+    Notification.requestPermission().then(p => {
+      showToast(p === 'granted' ? "ההתראות והרטט הופעלו בהצלחה!" : "ההתראות נדחו בדפדפן.");
+      if (p === 'granted') triggerVibrationAndAlert("בדיקת מערכת", "התרעות ורטט פועלות כראוי!");
+    });
   });
 }
 
@@ -1364,11 +1419,18 @@ if (notifPref) {
 }
 
 const adminDutySelector = document.getElementById('adminDutySelector');
+const newDynamicPersonSelect = document.getElementById('newDynamicPersonSelect');
+
 Object.values(PEOPLE).forEach(n => {
   if (adminDutySelector) {
     const opt = document.createElement('option');
     opt.value = n; opt.textContent = n;
     adminDutySelector.appendChild(opt);
+  }
+  if (newDynamicPersonSelect) {
+    const opt2 = document.createElement('option');
+    opt2.value = n; opt2.textContent = n;
+    newDynamicPersonSelect.appendChild(opt2);
   }
 });
 
@@ -1382,9 +1444,37 @@ if (saveAdminDutyBtn) {
   });
 }
 
-// -------------------------------------------------------------
-// ניהול ממשק הרשאות מורשׂים, מנהלים והסתרת כרטיסיות
-// -------------------------------------------------------------
+const addDynamicTaskBtn = document.getElementById('addDynamicTaskBtn');
+if (addDynamicTaskBtn) {
+  addDynamicTaskBtn.addEventListener('click', async () => {
+    const taskInput = document.getElementById('newDynamicTaskInput');
+    const personSel = document.getElementById('newDynamicPersonSelect');
+    const taskName = taskInput ? taskInput.value.trim() : '';
+    const personName = personSel ? personSel.value : '';
+
+    if (!taskName || !personName) {
+      showToast("נא להזין שם משימה ולבחור חבר צוות");
+      return;
+    }
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (!dynamicDuties[todayStr]) dynamicDuties[todayStr] = [];
+    dynamicDuties[todayStr].push({ taskName, personName });
+
+    await db.collection("groupData").doc("securityConfig").set({
+      whitelist: whitelistEmails,
+      admins: adminEmails,
+      hiddenPages: hiddenPagesConfig,
+      calendarNotes,
+      dynamicDuties
+    }, { merge: true });
+
+    taskInput.value = "";
+    showToast("התורנות נוספה בהצלחה להיום!");
+    renderTodayDynamicDuties();
+  });
+}
+
 function renderSecurityAdminUI() {
   const wContainer = document.getElementById('whitelistContainer');
   if (wContainer) {
@@ -1415,7 +1505,7 @@ if (addWhitelistBtn) {
     if (!val || !val.includes('@')) { showToast("נא להזין אימייל תקין"); return; }
     if (!whitelistEmails.map(e => e.toLowerCase()).includes(val)) {
       whitelistEmails.push(val);
-      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
       input.value = "";
       showToast("האימייל נוסף למורשי הכניסה!");
     } else {
@@ -1426,7 +1516,7 @@ if (addWhitelistBtn) {
 
 window.removeWhitelistEmail = async function(idx) {
   whitelistEmails.splice(idx, 1);
-  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
   showToast("המורשה הוסר בהצלחה!");
 };
 
@@ -1438,7 +1528,7 @@ if (addAdminBtn) {
     if (!val || !val.includes('@')) { showToast("נא להזין אימייל תקין"); return; }
     if (!adminEmails.map(e => e.toLowerCase()).includes(val)) {
       adminEmails.push(val);
-      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+      await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
       input.value = "";
       showToast("המנהל נוסף בהצלחה!");
     } else {
@@ -1449,7 +1539,7 @@ if (addAdminBtn) {
 
 window.removeAdminEmail = async function(idx) {
   adminEmails.splice(idx, 1);
-  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+  await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
   showToast("הרשאת הניהול הוסרה!");
 };
 
@@ -1457,7 +1547,7 @@ document.querySelectorAll('#visibilityToggles input').forEach(input => {
   input.addEventListener('change', async () => {
     const key = input.dataset.hide;
     hiddenPagesConfig[key] = input.checked;
-    await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes }, { merge: true });
+    await db.collection("groupData").doc("securityConfig").set({ whitelist: whitelistEmails, admins: adminEmails, hiddenPages: hiddenPagesConfig, calendarNotes, dynamicDuties }, { merge: true });
     showToast("הגדרות תצוגה עודכנו!");
   });
 });
@@ -1477,8 +1567,11 @@ if (sendAdminBroadcastBtn) {
     });
     if (chatMessages.length > 50) chatMessages = chatMessages.slice(chatMessages.length - 50);
     await db.collection("groupData").doc("chatRoom").set({ messages: chatMessages });
+    
+    triggerVibrationAndAlert("הודעת מערכת חשובה", text);
+
     if (input) input.value = "";
-    showToast("הודעת המערכת נשלחה בהצלחה לכולם!");
+    showToast("הודעת המערכת נשלחה והופעל רטט לכולם!");
   });
 }
 
